@@ -9,6 +9,11 @@ import io.github.takusan23.server.PhoTransferServer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+/**
+ * エントリーポイント
+ *
+ * UIはComposeで出来ています。
+ * */
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,13 +21,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainScreen()
-        }
-
-        lifecycleScope.launch {
-            val server = PhoTransferServer()
-            server.startServer(4649, getExternalFilesDir(null)!!.path).collect {
-
-            }
         }
 
     }

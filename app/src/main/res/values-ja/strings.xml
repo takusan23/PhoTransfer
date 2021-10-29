@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PhoTransfer</string>
+    <string name="launch_server">写真を受信する側として開始（サーバー側）</string>
+    <string name="launch_client">写真を送信する側として開始（クライアント側）</string>
+    <string name="launch_server_description">受信側は同じWi-Fiに一つだけ追加できます。</string>
+    <string name="about">このアプリでは、一つの端末に写真を集めることができます。</string>
+    <string name="client_setting">クライアント側設定</string>
+    <string name="server_setting">サーバー側設定</string>
+    <string name="start_server">受け入れ準備（サーバーを起動）</string>
+    <string name="setting_port_number_title">ポート番号</string>
+    <string name="setting_port_number_description">既にポート番号を利用中の場合は他の値に変更してください（上級者向け）</string>
+    <string name="find_device">同じWi-FiネットワークからPhoTransferが実行中の端末を探しています。</string>
+    <string name="ip_address">IPアドレス</string>
+    <string name="port">ポート番号</string>
+    <string name="device_name">デバイス名</string>
+    <string name="start_client">送る準備（クライアント起動）</string>
+    <string name="client_send_message">こちらの端末に送信します</string>
+    <string name="running_server">受信側として実行中です（サーバー側)</string>
+    <string name="running_client">送信側として実行中です（クライアント側）</string>
+    <string name="client_home_title">クライアント側ホーム画面</string>
+    <string name="server_home_title">サーバー側ホーム画面</string>
+    <string name="disable_title">実行していません。実行するにはスイッチを有効にしてください。</string>
+</resources>

@@ -11,6 +11,14 @@ import kotlinx.coroutines.flow.channelFlow
 /**
  * android.net.nsdパッケージを使ってmDNSまがいなことをする
  *
+ * サービスタイプは「_photransfer._tcp」です。
+ *
+ * DNS-SDが使える場合（WindowsならAppleのBonjourSDKで使える？）
+ *
+ * dns-sd -B _photransfer._tcp
+ *
+ * でこのアプリ（PhoTransfer）が発見できます。
+ *
  * Flowを返す関数はちゃんとコルーチンの後始末お願いします（lifecycleScopeを使えばおｋ）
  * */
 class NetworkServiceDiscovery(private val context: Context) {

@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">PhoTransfer</string>
+    <string name="launch_server">Start as the recipient of the photo (start the server)</string>
+    <string name="launch_client">Start as the sender of the photo (client)</string>
+    <string name="launch_server_description">Only one receiver can be added to the same Wi-Fi.</string>
+    <string name="about">With this app, you can collect photos on one device.</string>
+    <string name="client_setting">Client side settings</string>
+    <string name="server_setting">Server side settings</string>
+    <string name="start_server">Ready to accept (start server)</string>
+    <string name="setting_port_number_title">Port number</string>
+    <string name="setting_port_number_description">If you are already using the port number, change it to another value (for advanced users).</string>
+    <string name="find_device">I\'m looking for a device running Pho Transfer from the same Wi-Fi network.</string>
+    <string name="ip_address">IP address</string>
+    <string name="port">Port number</string>
+    <string name="device_name">Device name</string>
+    <string name="start_client">Sender preparation (client startup)</string>
+    <string name="client_send_message">Transfer to this device</string>
+    <string name="running_server">Running as receiver (server side)</string>
+    <string name="running_client">Running as sender (client side)</string>
+    <string name="client_home_title">Client side home screen</string>
+    <string name="server_home_title">Server side home screen</string>
+    <string name="disable_title">Not running. Please enable the switch to run.</string>
 </resources>

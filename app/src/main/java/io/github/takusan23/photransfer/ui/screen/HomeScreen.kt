@@ -1,39 +1,44 @@
 package io.github.takusan23.photransfer.ui.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import io.github.takusan23.photransfer.R
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import io.github.takusan23.photransfer.setting.SettingKeyObject
+import io.github.takusan23.photransfer.setting.dataStore
+import kotlinx.coroutines.flow.collect
 
+/**
+ * ホーム画面
+ * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigation: (String) -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            LargeTopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) })
-        },
-        content = {
-            Column(modifier = Modifier.padding(it)) {
 
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = { onNavigation(NavigationLinkList.ServerScreen) },
-                    content = { Text(text = "サーバー") }
-                )
-                
-                Button(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = { onNavigation(NavigationLinkList.ClientScreen) },
-                    content = { Text(text = "クライアント") }
-                )
+    // DataStore読み出し
+    val context = LocalContext.current
+    val mode = remember { mutableStateOf("") }
 
+    // 未設定時はnullにしてる
+    LaunchedEffect(key1 = Unit, block = {
+        context.dataStore.data.collect {
+            val settingModeValue = it[SettingKeyObject.MODE]
+            println(settingModeValue)
+            if (settingModeValue != null) {
+                // 初期設定通過後
+                mode.value = settingModeValue
+            } else {
+                // 初期設定まだしてない
+                onNavigation(NavigationLinkList.SetupScreen)
             }
         }
-    )
+    })
+
+    // それぞれの画面へ、初回起動時はセットアップ画面へ飛ばす
+    when (mode.value) {
+        SettingKeyObject.MODE_SERVER -> ServerHomeScreen()
+        SettingKeyObject.MODE_CLIENT -> ClientHomeScreen()
+    }
+
 }
