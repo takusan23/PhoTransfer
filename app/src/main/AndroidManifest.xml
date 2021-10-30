@@ -2,7 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.takusan23.photransfer">
 
+    <!-- インターネット権限 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 端末起動時にブロードキャストを受け取る -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- サーバー側は常に受付するのでサービスで実装する -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Android 9以前はMediaStoreでフォルダが作れないのでJavaのFileクラスを使う -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -10,12 +20,22 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PhoTransfer">
+        android:theme="@style/Theme.PhoTransfer"
+        android:usesCleartextTraffic="true">
 
         <service
             android:name=".service.PhoTransferService"
             android:enabled="true"
             android:exported="false" />
+
+        <receiver
+            android:name=".service.SystemBootCompleteReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".MainActivity"

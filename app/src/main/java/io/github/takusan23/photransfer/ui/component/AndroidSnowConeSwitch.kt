@@ -31,7 +31,7 @@ fun AndroidSnowConeSwitch(
     isEnable: Boolean,
     onValueChange: (Boolean) -> Unit,
 ) {
-    val backgroundColor = animateColorAsState(targetValue = if (isEnable) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color.DarkGray)
+    val backgroundColor = animateColorAsState(targetValue = if (isEnable) MaterialTheme.colorScheme.primary else Color.DarkGray)
     Surface(
         modifier = modifier
             .height(30.dp)

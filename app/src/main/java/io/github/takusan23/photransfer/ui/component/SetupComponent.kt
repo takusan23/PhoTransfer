@@ -72,23 +72,25 @@ fun SetupTitle() {
 @ExperimentalMaterialApi
 @Composable
 fun SetupServerOrClientSelect(onNavigate: (String) -> Unit) {
-    Column(modifier = Modifier.padding(10.dp)) {
-        SetupButtons(
-            modifier = Modifier
-                .fillMaxWidth(),
-            text = stringResource(id = R.string.launch_server),
-            icon = painterResource(id = R.drawable.ic_outline_file_download_24),
-            description = stringResource(id = R.string.launch_server_description),
-            onClick = { onNavigate(NavigationLinkList.ServerSetupScreen) }
-        )
-        SetupButtons(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            text = stringResource(id = R.string.launch_client),
-            icon = painterResource(id = R.drawable.ic_outline_file_upload_24),
-            onClick = { onNavigate(NavigationLinkList.ClientSetupScreen) }
-        )
+    Surface {
+        Column(modifier = Modifier.padding(10.dp)) {
+            SetupButtons(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = stringResource(id = R.string.launch_server),
+                icon = painterResource(id = R.drawable.ic_outline_file_download_24),
+                description = stringResource(id = R.string.launch_server_description),
+                onClick = { onNavigate(NavigationLinkList.ServerSetupScreen) }
+            )
+            SetupButtons(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                text = stringResource(id = R.string.launch_client),
+                icon = painterResource(id = R.drawable.ic_outline_file_upload_24),
+                onClick = { onNavigate(NavigationLinkList.ClientSetupScreen) }
+            )
+        }
     }
 }
 
@@ -143,5 +145,4 @@ private fun SetupButtons(
             }
         }
     )
-
 }

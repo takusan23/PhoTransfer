@@ -1,6 +1,8 @@
 package io.github.takusan23.photransfer.ui.screen
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
@@ -12,10 +14,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import io.github.takusan23.photransfer.R
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
+import io.github.takusan23.photransfer.ui.component.ManualUploadButton
 import io.github.takusan23.photransfer.ui.component.LabelSwitch
 import kotlinx.coroutines.launch
 
@@ -33,12 +37,20 @@ fun ClientHomeScreen() {
         },
         content = {
             Box(modifier = Modifier.padding(it)) {
-                // 有効、無効スイッチ
-                LabelSwitch(
-                    text = if (isRunning) stringResource(id = R.string.running_client) else stringResource(id = R.string.disable_title),
-                    isEnable = isRunning,
-                    onValueChange = { value -> scope.launch { context.dataStore.edit { it[SettingKeyObject.IS_RUNNING] = value } } }
-                )
+                Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
+
+                    // 有効、無効スイッチ
+                    LabelSwitch(
+                        text = if (isRunning) stringResource(id = R.string.running_client) else stringResource(id = R.string.disable_title),
+                        isEnable = isRunning,
+                        onValueChange = { value -> scope.launch { context.dataStore.edit { it[SettingKeyObject.IS_RUNNING] = value } } }
+                    )
+
+                    Spacer(modifier = Modifier.padding(top = 20.dp))
+
+                    // 写真転送ボタン
+                    ManualUploadButton()
+                }
             }
         }
     )

@@ -9,7 +9,7 @@
     <string name="server_setting">サーバー側設定</string>
     <string name="start_server">受け入れ準備（サーバーを起動）</string>
     <string name="setting_port_number_title">ポート番号</string>
-    <string name="setting_port_number_description">既にポート番号を利用中の場合は他の値に変更してください（上級者向け）</string>
+    <string name="setting_port_number_description">既に同じポート番号を利用中の場合は他の値に変更してください（上級者向け）</string>
     <string name="find_device">同じWi-FiネットワークからPhoTransferが実行中の端末を探しています。</string>
     <string name="ip_address">IPアドレス</string>
     <string name="port">ポート番号</string>
@@ -21,4 +21,13 @@
     <string name="client_home_title">クライアント側ホーム画面</string>
     <string name="server_home_title">サーバー側ホーム画面</string>
     <string name="disable_title">実行していません。実行するにはスイッチを有効にしてください。</string>
+    <string name="server_notification_title">PhoTransfer サーバー実行中通知</string>
+    <string name="close">終了</string>
+    <string name="request_permission_description">Android 9以前の端末では、写真フォルダ内にフォルダを作成できないので、ストレージ書き込み権限を付与してください。</string>
+    <string name="permission_request_button">権限を付与</string>
+    <string name="send_device_name">送信先</string>
+    <string name="send_complete">送信に成功しました</string>
+    <string name="manual_send">写真を転送する（手動）</string>
+    <string name="save_folder">保存先</string>
+    <string name="not_found_device">現在利用できません。受け付け側（サーバー側）を検出できませんでした。</string>
 </resources>

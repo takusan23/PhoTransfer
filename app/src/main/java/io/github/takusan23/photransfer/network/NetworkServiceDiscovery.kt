@@ -46,7 +46,7 @@ class NetworkServiceDiscovery(private val context: Context) {
         val registrationListener = object : NsdManager.RegistrationListener {
             override fun onServiceRegistered(serviceInfo: NsdServiceInfo?) {
                 // 登録成功
-                trySend(serviceInfo?.serviceName)
+                if (serviceInfo != null) trySend(serviceInfo)
             }
 
             override fun onRegistrationFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
@@ -67,7 +67,7 @@ class NetworkServiceDiscovery(private val context: Context) {
     }
 
     /**
-     * ネットワーク検出を始める
+     * ネットワーク検出を始める。見失った場合はnullをFlowに流します
      *
      * @return Flowを返します。ネットワークサービス詳細が流れてきます。
      * */
@@ -105,7 +105,7 @@ class NetworkServiceDiscovery(private val context: Context) {
             }
 
             override fun onServiceLost(serviceInfo: NsdServiceInfo?) {
-
+                trySend(null)
             }
         }
         // 登録

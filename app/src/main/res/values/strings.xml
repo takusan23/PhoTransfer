@@ -8,7 +8,7 @@
     <string name="server_setting">Server side settings</string>
     <string name="start_server">Ready to accept (start server)</string>
     <string name="setting_port_number_title">Port number</string>
-    <string name="setting_port_number_description">If you are already using the port number, change it to another value (for advanced users).</string>
+    <string name="setting_port_number_description">If you are already using the same port number, change it to another value (for advanced users).</string>
     <string name="find_device">I\'m looking for a device running Pho Transfer from the same Wi-Fi network.</string>
     <string name="ip_address">IP address</string>
     <string name="port">Port number</string>
@@ -20,4 +20,13 @@
     <string name="client_home_title">Client side home screen</string>
     <string name="server_home_title">Server side home screen</string>
     <string name="disable_title">Not running. Please enable the switch to run.</string>
+    <string name="server_notification_title">PhoTransfer server running notification</string>
+    <string name="close">Cancel</string>
+    <string name="request_permission_description">On Android 9 or earlier devices, you cannot create a folder in the photo folder, so give storage write permission.</string>
+    <string name="permission_request_button">Grant authority</string>
+    <string name="send_device_name">Destination</string>
+    <string name="send_complete">Transfer succeeded</string>
+    <string name="manual_send">Transfer photos (manual)</string>
+    <string name="save_folder">Folder</string>
+    <string name="not_found_device">Currently unavailable. The reception side (server side) could not be detected.</string>
 </resources>

@@ -34,10 +34,10 @@ class PhoTransferServer {
      *
      * @param port ポート
      * @param saveFolderPath 保存先。
-     * @return 保存したファイルのパスをFlowで流します。
+     * @return 端末の名前と保存したファイルのパスをFlowで流します。
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun startServer(port: Int = 4649, saveFolderPath: String) = channelFlow<String> {
+    suspend fun startServer(port: Int = 4649, saveFolderPath: String) = channelFlow {
         val server = embeddedServer(Netty, port = port) {
             routing {
                 get("/") {
@@ -54,11 +54,13 @@ class PhoTransferServer {
                 post("/upload") {
                     // コンテキスト切り替えないと怒られる
                     withContext(Dispatchers.IO) {
+                        // デバイス名取得
+                        val deviceName = call.request.headers["User-Agent"] ?: "不明なデバイス"
                         // データ受け取る
                         val multipartData = call.receiveMultipart()
                         multipartData.forEachPart { part ->
                             if (part is PartData.FileItem) {
-                                val name = part.originalFileName
+                                val name = part.originalFileName!!
                                 val byteArray = part.provider().readBytes()
                                 // ファイル作成
                                 val receiveFile = File(saveFolderPath, name).apply {
@@ -66,7 +68,7 @@ class PhoTransferServer {
                                     writeBytes(byteArray)
                                 }
                                 // ファイルパスをFlowに流す
-                                trySend(receiveFile.path)
+                                trySend(deviceName to receiveFile.path)
                             }
                         }
                         call.respondText("OK")

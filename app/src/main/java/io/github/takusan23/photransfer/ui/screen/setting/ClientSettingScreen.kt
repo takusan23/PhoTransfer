@@ -34,8 +34,8 @@ fun ClientSettingScreen(
     // デバイスが発見できるか試す
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val networkServiceDiscovery = remember { NetworkServiceDiscovery(context) }
-    val findDevice = networkServiceDiscovery.findDevice().collectAsState(initial = null)
+    val networkServiceDiscovery = remember { NetworkServiceDiscovery(context).findDevice() }
+    val findDevice = networkServiceDiscovery.collectAsState(initial = null)
 
     Scaffold(
         topBar = {
