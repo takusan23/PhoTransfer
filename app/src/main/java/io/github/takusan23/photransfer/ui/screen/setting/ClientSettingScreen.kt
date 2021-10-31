@@ -70,7 +70,7 @@ fun ClientSettingScreen(
                             context.dataStore.edit {
                                 it[SettingKeyObject.IS_RUNNING] = true
                                 it[SettingKeyObject.MODE] = SettingKeyObject.MODE_CLIENT
-                                it[SettingKeyObject.CLIENT_LATEST_UPLOAD_DATE] = System.currentTimeMillis()
+                                it[SettingKeyObject.CLIENT_LATEST_TRANSFER_DATE] = System.currentTimeMillis()
                             }
                             onNavigate(NavigationLinkList.HomeScreen)
                         }

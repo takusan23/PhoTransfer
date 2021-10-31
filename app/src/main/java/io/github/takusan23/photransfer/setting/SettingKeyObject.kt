@@ -10,23 +10,23 @@ import androidx.datastore.preferences.core.stringPreferencesKey
  * */
 object SettingKeyObject {
 
-    /** 初期設定が終わったらtrue */
-    val IS_ALREADY_SETUP = booleanPreferencesKey("is_already_setup")
-
     /** client か server。D.C.4の恋するMODEは神曲 */
     val MODE = stringPreferencesKey("mode")
 
     /** ポート番号 */
     val PORT_NUMBER = intPreferencesKey("port_number")
 
-    /** 起動状態。起動中ならtrueにして */
+    /** 起動状態。起動中ならtrueにして。サービス側で変更される */
     val IS_RUNNING = booleanPreferencesKey("is_running")
 
     /** サーバー情報をServiceからActivityへ渡したいので。サーバー起動時はデバイス名が入る */
     val SERVER_SIDE_DEVICE_NAME = stringPreferencesKey("server_side_device_name")
 
     /** クライアント側、最後に転送した時刻を入れています。初回起動時はセットアップ完了時 */
-    val CLIENT_LATEST_UPLOAD_DATE = longPreferencesKey("client_latest_upload_date")
+    val CLIENT_LATEST_TRANSFER_DATE = longPreferencesKey("client_latest_transfer_date")
+
+    /** 充電中のみ転送する場合はtrue。サーバーでもクライアントでも動きます */
+    val SETTING_TRANSFER_REQUIRE_CHARGING = booleanPreferencesKey("transfer_require_charging")
 
     /** [mode]がクライアントモードだった場合 */
     const val MODE_CLIENT = "client_mode"

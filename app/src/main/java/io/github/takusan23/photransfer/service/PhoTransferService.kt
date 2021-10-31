@@ -17,12 +17,12 @@ import io.github.takusan23.photransfer.R
 import io.github.takusan23.photransfer.network.NetworkServiceDiscovery
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
+import io.github.takusan23.photransfer.tool.ChargingCheckTool
 import io.github.takusan23.photransfer.tool.MediaStoreTool
 import io.github.takusan23.photransfer.tool.NetworkCheckTool
 import io.github.takusan23.server.PhoTransferServer
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import java.io.File
 
 class PhoTransferService : Service() {
@@ -72,17 +72,38 @@ class PhoTransferService : Service() {
         registerBroadcast()
         // ネットワーク状態監視
         registerNetworkListener()
+        // サービス起動
+        scope.launch { dataStore.edit { it[SettingKeyObject.IS_RUNNING] = true } }
 
     }
 
     /** Wi-Fiに接続されているか監視する */
+    @OptIn(InternalCoroutinesApi::class)
     private fun registerNetworkListener() {
         scope.launch {
-            NetworkCheckTool.listenWiFiConnection(this@PhoTransferService).collect { isWiFiConnected ->
-                if (isWiFiConnected) {
+
+            // 充電中のみ？
+            val isRequireCharging = dataStore.data.first()[SettingKeyObject.SETTING_TRANSFER_REQUIRE_CHARGING] ?: true
+            // 充電Flow
+            val chargingFlow = if (isRequireCharging) ChargingCheckTool.listenCharging(this@PhoTransferService) else emptyFlow()
+            // Wi-Fi検知Flow
+            val wifiConnectionFlow = NetworkCheckTool.listenWiFiConnection(this@PhoTransferService)
+
+            // Flowを連結させる
+            merge(chargingFlow, wifiConnectionFlow).collect {
+                val isWiFiConnecting = NetworkCheckTool.isConnectionWiFi(this@PhoTransferService)
+                // 充電中か、isRequireChargingがfalseなら無条件true
+                val isCharging = if (isRequireCharging) ChargingCheckTool.isCharging(this@PhoTransferService) else true
+
+                if (isWiFiConnecting && isCharging) {
+                    // サーバーとローカルネットワークから検出可能にする
                     startServer()
                 } else {
-                    shutdownServer()
+                    // 使えない理由など。Because of ねぇ気付いてた？  並んで歩くとき
+                    val becauseText = arrayListOf<String>()
+                    if (!isWiFiConnecting) becauseText += getString(R.string.wait_wifi_connection)
+                    if (!isCharging) becauseText += getString(R.string.wait_battery_charging)
+                    shutdownServer(becauseText.joinToString(separator = "\n"))
                 }
             }
         }
@@ -120,16 +141,19 @@ class PhoTransferService : Service() {
         showNotification()
     }
 
-    /** サーバーをシャットダウンする。サービスはそのまま */
-    private fun shutdownServer() {
+    /**
+     * サーバーをシャットダウンする。サービスはそのまま
+     * @param serviceInfoText Wi-Fi接続を待機中など
+     * */
+    private fun shutdownServer(serviceInfoText: String = getString(R.string.wait_wifi_connection)) {
         serverJob?.cancelChildren()
-        showNotification(getString(R.string.wait_wifi_connection))
+        showNotification(serviceInfoText)
     }
 
     /** ブロードキャストを登録する */
     private fun registerBroadcast() {
         val intentFilter = IntentFilter().apply {
-            addAction("service_stop")
+            addAction("io.github.takusan23.photransfer.photransfer_service_stop")
         }
         registerReceiver(broadcastReceiver, intentFilter)
     }
@@ -165,8 +189,11 @@ class PhoTransferService : Service() {
     /** サービス終了時 */
     override fun onDestroy() {
         super.onDestroy()
-        scope.cancel()
         unregisterReceiver(broadcastReceiver)
+        runBlocking {
+            dataStore.edit { it[SettingKeyObject.IS_RUNNING] = false }
+            scope.cancel()
+        }
     }
 
     override fun onBind(intent: Intent): IBinder? {

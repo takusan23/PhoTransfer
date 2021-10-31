@@ -38,4 +38,6 @@
     <string name="transfer_notification_description">Number transferred</string>
     <string name="client_disable_title">Scheduled execution is disabled. You can enable it by pressing the switch.</string>
     <string name="wait_wifi_connection">Waiting for Wi-Fi connection.</string>
+    <string name="setting_transfer_charging_only">Transfer only while charging</string>
+    <string name="wait_battery_charging">Waiting to connect to the charger</string>
 </resources>

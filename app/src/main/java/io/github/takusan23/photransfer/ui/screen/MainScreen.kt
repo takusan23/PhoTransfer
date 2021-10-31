@@ -2,9 +2,6 @@ package io.github.takusan23.photransfer.ui.screen
 
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -22,7 +19,7 @@ import io.github.takusan23.photransfer.ui.theme.PhoTransferTheme
 @Composable
 fun MainScreen() {
 
-    PhoTransferTheme {
+    PhoTransferTheme(isDynamicColor = true) {
         Surface {
 
             val navController = rememberNavController()

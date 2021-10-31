@@ -7,7 +7,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 
 object NetworkCheckTool {
 
@@ -30,7 +30,7 @@ object NetworkCheckTool {
      * @return trueならWiFi接続あります
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun listenWiFiConnection(context: Context) = channelFlow {
+    fun listenWiFiConnection(context: Context) = callbackFlow {
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
@@ -48,6 +48,17 @@ object NetworkCheckTool {
         val request = NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build()
         connectivityManager.registerNetworkCallback(request, networkCallback)
         awaitClose { connectivityManager.unregisterNetworkCallback(networkCallback) }
+    }
+
+    /**
+     * Wi-Fi接続中かどうか返す
+     *
+     * @param context Context
+     * @return 接続中ならtrue
+     * */
+    fun isConnectedWiFi(context: Context): Boolean? {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
     }
 
 }

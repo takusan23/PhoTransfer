@@ -6,22 +6,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.datastore.preferences.core.Preferences
 import io.github.takusan23.photransfer.R
+import io.github.takusan23.photransfer.setting.SettingKeyObject
 
 /**
  * サーバー情報を表示する
  *
- * @param name 名前
+ * @param dataStore DataStore
  * */
 @Composable
 fun ServerInfo(
     modifier: Modifier = Modifier,
-    name: String,
+    dataStore: Preferences,
 ) {
+    val name = dataStore[SettingKeyObject.SERVER_SIDE_DEVICE_NAME]
+
     HomeScreenItem(
         modifier = Modifier.fillMaxWidth(),
         description = stringResource(id = R.string.device_name),
-        text = name,
+        text = name ?: "---",
         icon = painterResource(id = R.drawable.ic_outline_perm_device_information_24)
     )
 }

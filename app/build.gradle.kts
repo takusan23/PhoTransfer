@@ -80,6 +80,9 @@ dependencies {
     // WorkManager Kotlin + coroutines
     implementation("androidx.work:work-runtime-ktx:2.7.0")
 
+    // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+
     // MaterialDesign
     implementation("com.google.android.material:material:1.4.0")
 

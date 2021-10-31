@@ -32,6 +32,10 @@ object WorkManagerTool {
      * @param isRequireCharging 充電中のみ行う場合はtrue
      * */
     fun registerRepeat(context: Context, isRequireCharging: Boolean = false) {
+        val workManager = WorkManager.getInstance(context)
+        // 既存の定期実行はキャンセル
+        unRegisterRepeat(context)
+        // 登録
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresCharging(isRequireCharging)
@@ -43,7 +47,6 @@ object WorkManagerTool {
             .addTag(TAG)
             .setConstraints(constraints)
             .build()
-        val workManager = WorkManager.getInstance(context)
         workManager.enqueue(transferWork)
     }
 

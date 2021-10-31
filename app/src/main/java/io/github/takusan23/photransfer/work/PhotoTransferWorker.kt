@@ -42,7 +42,7 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
         val port = findServer.port
         // MediaStoreから写真取得
         val setting = context.dataStore.data.first()
-        val latestUploadDate = setting[SettingKeyObject.CLIENT_LATEST_UPLOAD_DATE]!!
+        val latestUploadDate = setting[SettingKeyObject.CLIENT_LATEST_TRANSFER_DATE]!!
         // 転送する写真を選ぶ。最後に転送した時間より新しいものを取得
         val cursor = context.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -67,7 +67,7 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
         cursor.close()
 
         // 今の日付を入れて、次どこから転送すればいいかわかるようにする
-        context.dataStore.edit { it[SettingKeyObject.CLIENT_LATEST_UPLOAD_DATE] = System.currentTimeMillis() }
+        context.dataStore.edit { it[SettingKeyObject.CLIENT_LATEST_TRANSFER_DATE] = System.currentTimeMillis() }
         // 通知で教える
         showNotification(taskList.count { it })
         return Result.success()
