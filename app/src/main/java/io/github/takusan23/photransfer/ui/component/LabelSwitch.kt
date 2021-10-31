@@ -1,5 +1,6 @@
 package io.github.takusan23.photransfer.ui.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -31,8 +33,9 @@ fun LabelSwitch(
     isEnable: Boolean,
     onValueChange: (Boolean) -> Unit,
 ) {
+    val backgroundColor = animateColorAsState(targetValue = if (isEnable) MaterialTheme.colorScheme.primaryContainer else Color.LightGray)
     Surface(
-        color = MaterialTheme.colorScheme.primaryContainer,
+        color = backgroundColor.value,
         onClick = { onValueChange(!isEnable) },
         interactionSource = remember { MutableInteractionSource() },
         indication = rememberRipple(),

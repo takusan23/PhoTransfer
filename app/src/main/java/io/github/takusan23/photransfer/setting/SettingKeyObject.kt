@@ -2,6 +2,7 @@ package io.github.takusan23.photransfer.setting
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 /**
@@ -23,6 +24,9 @@ object SettingKeyObject {
 
     /** サーバー情報をServiceからActivityへ渡したいので。サーバー起動時はデバイス名が入る */
     val SERVER_SIDE_DEVICE_NAME = stringPreferencesKey("server_side_device_name")
+
+    /** クライアント側、最後に転送した時刻を入れています。初回起動時はセットアップ完了時 */
+    val CLIENT_LATEST_UPLOAD_DATE = longPreferencesKey("client_latest_upload_date")
 
     /** [mode]がクライアントモードだった場合 */
     const val MODE_CLIENT = "client_mode"

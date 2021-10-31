@@ -30,7 +30,7 @@ fun ServerInfo(
  * 保存先情報
  * */
 @Composable
-fun ServerFolderPathInfo(modifier: Modifier) {
+fun ServerFolderPathInfo(modifier: Modifier = Modifier) {
     HomeScreenItem(
         modifier = modifier.fillMaxWidth(),
         description = stringResource(id = R.string.save_folder),

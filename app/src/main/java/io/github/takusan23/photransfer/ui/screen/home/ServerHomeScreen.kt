@@ -69,14 +69,11 @@ fun ServerHomeScreen() {
 
                     // サーバー情報
                     if (isRunning && serverName != null) {
-                        ServerInfo(
-                            modifier = Modifier.padding(top = 10.dp),
-                            name = serverName
-                        )
+                        ServerInfo(name = serverName)
                     }
 
                     // 保存先
-                    ServerFolderPathInfo(modifier = Modifier.padding(top = 10.dp))
+                    ServerFolderPathInfo()
 
                 }
             }
@@ -99,8 +96,10 @@ private fun ServerEnableSwitch(isRunning: Boolean, setting: DataStore<Preference
         text = if (isRunning) stringResource(id = R.string.running_server) else stringResource(id = R.string.disable_title),
         isEnable = isRunning,
         onValueChange = { value ->
-            if (value) PhoTransferService.startService(context) else PhoTransferService.stopService(context)
-            scope.launch { setting.edit { it[SettingKeyObject.IS_RUNNING] = value } }
+            scope.launch {
+                setting.edit { it[SettingKeyObject.IS_RUNNING] = value }
+                if (value) PhoTransferService.startService(context) else PhoTransferService.stopService(context)
+            }
         }
     )
 }

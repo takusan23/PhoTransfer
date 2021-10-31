@@ -19,10 +19,11 @@ import io.github.takusan23.photransfer.R
 /**
  * Android 9以前で表示する、ファイル書き込み権限ください画面
  *
+ * @param modifier Modifier
  * @param onGranted 権限が付与されたら呼ばれる
  * */
 @Composable
-fun PermissionCard(
+fun StorageWritePermissionCard(
     modifier: Modifier = Modifier,
     onGranted: () -> Unit,
 ) {
@@ -47,7 +48,7 @@ fun PermissionCard(
                     contentDescription = null
                 )
                 Text(
-                    text = stringResource(id = R.string.request_permission_description),
+                    text = stringResource(id = R.string.request_storage_write_permission_description),
                     modifier = Modifier.padding(10.dp),
                 )
             }
@@ -57,6 +58,55 @@ fun PermissionCard(
                     .align(Alignment.End)
                     .padding(bottom = 10.dp, end = 10.dp),
                 onClick = { permissionCallback.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) },
+                content = { Text(text = stringResource(id = R.string.permission_request_button)) }
+            )
+        }
+    }
+}
+
+/**
+ * ストレージ読み込み権限をもらう。
+ *
+ * MediaStoreで他アプリの追加した画像を取得するため
+ *
+ * @param modifier Modifier
+ * @param onGranted 権限が付与されたら呼ばれる
+ * */
+@Composable
+fun StorageReadPermissionCard(
+    modifier: Modifier = Modifier,
+    onGranted: () -> Unit,
+) {
+    // 権限コールバック
+    val permissionCallback = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(), onResult = { isGranted ->
+        if (isGranted) {
+            onGranted()
+        }
+    })
+
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.errorContainer,
+        shape = RoundedCornerShape(20.dp),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    modifier = Modifier.padding(start = 10.dp),
+                    painter = painterResource(id = R.drawable.ic_outline_info_24),
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(id = R.string.request_storage_read_permission_description),
+                    modifier = Modifier.padding(10.dp),
+                )
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(bottom = 10.dp, end = 10.dp),
+                onClick = { permissionCallback.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE) },
                 content = { Text(text = stringResource(id = R.string.permission_request_button)) }
             )
         }

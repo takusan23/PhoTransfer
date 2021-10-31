@@ -10,6 +10,8 @@ import android.webkit.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 /**
  * MediaStoreとかいうあんま使いやすくないAPIを簡単に使えるように
@@ -19,9 +21,12 @@ object MediaStoreTool {
     /**
      * MediaStoreに写真を突っ込む
      *
-     * Android、JavaのFileクラスで直接写真フォルダを選ぶことは禁止されているので、MediaStoreとかいうDBに写真の情報追加して
+     * Android 10以降
+     * -> MediaStoreに登録後UriがもらえるのでOutputStreamを開いて画像データを流す。
      *
-     * Uriを発行してもらい、UriからOutputStreamを開いて画像データを流す。クソめんどいんだけどこれ
+     * Android 9以前
+     * -> JavaのFileクラスでPicturesフォルダ内にフォルダ作成後、写真ファイルもその中に作成。
+     * 画像ファイルのOutputStreamを開き画像データを流し、最後にMediaStoreに登録する。
      *
      * @param context Context
      * @param deviceName Pictures/PhoTransfer_<フォルダ名> ←ここの名前
@@ -37,24 +42,31 @@ object MediaStoreTool {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/PhoTransfer_$deviceName")
             }
         }
-        // ファイル追加
-        val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues) ?: return@withContext
-        // OutputStreamもらう
-        val outputStream = context.contentResolver.openOutputStream(uri)!!
-        val inputStream = file.inputStream()
-        // 書き込む
-        val buffer = ByteArray(1024 * 4096)
-        while (true) {
-            val read = inputStream.read(buffer)
-            if (read == -1) {
-                // もう取れない
-                break
-            }
-            outputStream.write(buffer, 0, read)
+        /**
+         * Android 10以降と分岐。Android 10以降はMedia.RELATIVE_PATHでフォルダが作成できるが、
+         *
+         * Android 9以前には無いのでJavaのFileクラスでファイルを作成して、その後にMediaStoreに登録する
+         * */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // MediaStoreへファイル追加
+            val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues) ?: return@withContext
+            val outputStream = context.contentResolver.openOutputStream(uri)!!
+            val inputStream = file.inputStream()
+            // 書き込む
+            copy(inputStream, outputStream)
+        } else {
+            // Android 9
+            val phoTransferFolder = File(Environment.DIRECTORY_PICTURES, "PhoTransfer_$deviceName").apply { mkdir() }
+            val photoFile = File(phoTransferFolder, file.name).apply { createNewFile() }
+            // 書き込む
+            val inputStream = file.inputStream()
+            val outputStream = photoFile.outputStream()
+            copy(inputStream, outputStream)
+            // MediaStoreへ登録
+            contentValues.put(MediaStore.Images.Media.DATA, photoFile.path)
+            context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         }
-        // 終了処理
-        outputStream.close()
-        inputStream.close()
+        // 消すなら消す
         if (isFileDelete) {
             file.delete()
         }
@@ -73,18 +85,7 @@ object MediaStoreTool {
         val inputStream = context.contentResolver.openInputStream(uri)!!
         val outputStream = file.outputStream()
         // 書き込む
-        val buffer = ByteArray(1024 * 4096)
-        while (true) {
-            val read = inputStream.read(buffer)
-            if (read == -1) {
-                // もう取れない
-                break
-            }
-            outputStream.write(buffer, 0, read)
-        }
-        // 終了処理
-        outputStream.close()
-        inputStream.close()
+        copy(inputStream, outputStream)
         return@withContext file.path
     }
 
@@ -103,6 +104,28 @@ object MediaStoreTool {
             close()
         }
         return@withContext fileName
+    }
+
+    /**
+     * InputStreamとOutputStreamを使った古典的なファイルコピー
+     *
+     * @param inputStream コピー元
+     * @param outputStream コピー先
+     * */
+    private fun copy(inputStream: InputStream, outputStream: OutputStream) {
+        // 書き込む
+        val buffer = ByteArray(1024 * 4096)
+        while (true) {
+            val read = inputStream.read(buffer)
+            if (read == -1) {
+                // もう取れない
+                break
+            }
+            outputStream.write(buffer, 0, read)
+        }
+        // 終了処理
+        outputStream.close()
+        inputStream.close()
     }
 
 }

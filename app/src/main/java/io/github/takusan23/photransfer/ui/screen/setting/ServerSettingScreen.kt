@@ -21,7 +21,7 @@ import androidx.datastore.preferences.core.edit
 import io.github.takusan23.photransfer.R
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
-import io.github.takusan23.photransfer.ui.component.PermissionCard
+import io.github.takusan23.photransfer.ui.component.StorageWritePermissionCard
 import io.github.takusan23.photransfer.ui.screen.NavigationLinkList
 import kotlinx.coroutines.launch
 
@@ -71,7 +71,7 @@ fun ServerSettingScreen(
 
                     // Android 9以前は権限もらう
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                        PermissionCard(modifier = Modifier.padding(top = 10.dp)) {
+                        StorageWritePermissionCard(modifier = Modifier.padding(top = 10.dp)) {
                             isPermissionGranted.value = true
                         }
                     }

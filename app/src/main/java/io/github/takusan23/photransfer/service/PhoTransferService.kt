@@ -18,13 +18,11 @@ import io.github.takusan23.photransfer.network.NetworkServiceDiscovery
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.tool.MediaStoreTool
+import io.github.takusan23.photransfer.tool.NetworkCheckTool
 import io.github.takusan23.server.PhoTransferServer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import java.io.File
 
 class PhoTransferService : Service() {
@@ -46,26 +44,58 @@ class PhoTransferService : Service() {
      * */
     private val receivePhotoFolder by lazy { File(externalCacheDir, "receive_photo").apply { mkdir() } }
 
+    /** ローカルネットワークへ登録するやつとサーバーを起動してるコルーチンのJob */
+    private var serverJob: Job? = null
+
     /**
      * 通知を消せるようにブロードキャストを待ち受ける
      * */
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            // サービス起動
-            stopSelf()
+            // Wi-Fi切り替え
+            when (intent?.action) {
+                "io.github.takusan23.photransfer.photransfer_service_stop" -> {
+                    // サービス終了
+                    stopSelf()
+                }
+            }
         }
     }
 
     override fun onCreate() {
         super.onCreate()
 
+        val isWiFiConnected = NetworkCheckTool.isConnectionWiFi(this)
         // 通知出す
-        showNotification()
+        showNotification(if (isWiFiConnected) getString(R.string.running_server) else getString(R.string.wait_wifi_connection))
         // ブロードキャストを登録
         registerBroadcast()
+        // ネットワーク状態監視
+        registerNetworkListener()
 
-        // NSD（ローカルネットワークから検出できるやつ） と PhoTransferサーバー を起動する
+    }
+
+    /** Wi-Fiに接続されているか監視する */
+    private fun registerNetworkListener() {
         scope.launch {
+            NetworkCheckTool.listenWiFiConnection(this@PhoTransferService).collect { isWiFiConnected ->
+                if (isWiFiConnected) {
+                    startServer()
+                } else {
+                    shutdownServer()
+                }
+            }
+        }
+    }
+
+    /**
+     * サーバー起動
+     *
+     * ローカルネットワークに追加とPhoTransferサーバーを立ち上げる
+     * */
+    private fun startServer() {
+        // NSD（ローカルネットワークから検出できるやつ） と PhoTransferサーバー を起動する
+        serverJob = scope.launch {
             // ポート番号
             val portNumber = dataStore.data.first()[SettingKeyObject.PORT_NUMBER] ?: SettingKeyObject.DEFAULT_PORT_NUMBER
             // ローカルネットワークへ登録
@@ -87,6 +117,13 @@ class PhoTransferService : Service() {
                 }
             }
         }
+        showNotification()
+    }
+
+    /** サーバーをシャットダウンする。サービスはそのまま */
+    private fun shutdownServer() {
+        serverJob?.cancelChildren()
+        showNotification(getString(R.string.wait_wifi_connection))
     }
 
     /** ブロードキャストを登録する */
@@ -116,7 +153,7 @@ class PhoTransferService : Service() {
             setContentText(contentText)
             setSmallIcon(R.drawable.photransfer_icon)
             // 終了ボタン
-            addAction(R.drawable.ic_outline_close_24, getString(R.string.close), PendingIntent.getBroadcast(this@PhoTransferService, 10, Intent("service_stop"), PendingIntent.FLAG_IMMUTABLE))
+            addAction(R.drawable.ic_outline_close_24, getString(R.string.close), PendingIntent.getBroadcast(this@PhoTransferService, 10, Intent("io.github.takusan23.photransfer.photransfer_service_stop"), PendingIntent.FLAG_IMMUTABLE))
         }.build()
         startForeground(NOTIFICATION_ID, notification)
     }
