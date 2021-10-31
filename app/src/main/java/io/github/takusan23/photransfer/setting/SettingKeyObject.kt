@@ -28,6 +28,9 @@ object SettingKeyObject {
     /** 充電中のみ転送する場合はtrue。サーバーでもクライアントでも動きます */
     val SETTING_TRANSFER_REQUIRE_CHARGING = booleanPreferencesKey("transfer_require_charging")
 
+    /** 定期実行間隔 */
+    val CLIENT_TRANSFER_INTERVAL_MINUTE = longPreferencesKey("client_transfer_interval_minute")
+
     /** [mode]がクライアントモードだった場合 */
     const val MODE_CLIENT = "client_mode"
 
@@ -36,5 +39,8 @@ object SettingKeyObject {
 
     /** デフォポート番号 */
     const val DEFAULT_PORT_NUMBER = 4649
+
+    /** デフォルト定期実行間隔（単位：分） */
+    const val DEFAULT_CLIENT_TRANSFER_INTERVAL_MINUTE = 60L
 
 }

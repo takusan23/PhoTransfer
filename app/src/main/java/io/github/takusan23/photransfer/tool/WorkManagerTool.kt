@@ -30,8 +30,9 @@ object WorkManagerTool {
      *
      * @param context Context
      * @param isRequireCharging 充電中のみ行う場合はtrue
+     * @param intervalMinute 定期実行間隔。単位は分。最低値は15分以上である必要があります。
      * */
-    fun registerRepeat(context: Context, isRequireCharging: Boolean = false) {
+    fun registerRepeat(context: Context, isRequireCharging: Boolean = false, intervalMinute: Long = 60) {
         val workManager = WorkManager.getInstance(context)
         // 既存の定期実行はキャンセル
         unRegisterRepeat(context)
@@ -41,7 +42,7 @@ object WorkManagerTool {
             .setRequiresCharging(isRequireCharging)
             .build()
         val transferWork = PeriodicWorkRequestBuilder<PhotoTransferWorker>(
-            1, TimeUnit.HOURS, // 1時間感覚。ダイナモ感覚ダイナモ感覚YOYOYO YEAR!
+            intervalMinute, TimeUnit.MINUTES, // 1時間感覚。ダイナモ感覚ダイナモ感覚YOYOYO YEAR!
             10, TimeUnit.MINUTES // 1時間になる10分前に実行する
         )
             .addTag(TAG)

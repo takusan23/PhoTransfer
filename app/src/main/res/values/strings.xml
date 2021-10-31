@@ -40,4 +40,7 @@
     <string name="wait_wifi_connection">Waiting for Wi-Fi connection.</string>
     <string name="setting_transfer_charging_only">Transfer only while charging</string>
     <string name="wait_battery_charging">Waiting to connect to the charger</string>
+    <string name="setting_interval_minute">Periodic execution interval</string>
+    <string name="minute">Minute</string>
+    <string name="setting_interval_minute_description">The minimum periodic run time interval is 15 minutes.</string>
 </resources>

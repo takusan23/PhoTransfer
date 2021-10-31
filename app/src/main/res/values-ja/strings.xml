@@ -41,4 +41,7 @@
     <string name="wait_wifi_connection">Wi-Fi接続を待機中です。</string>
     <string name="setting_transfer_charging_only">充電中のみ転送を行う</string>
     <string name="wait_battery_charging">充電器への接続の待機中です。</string>
+    <string name="setting_interval_minute">定期実行の間隔</string>
+    <string name="minute">分</string>
+    <string name="setting_interval_minute_description">最低定期実行時間間隔は15分です。</string>
 </resources>

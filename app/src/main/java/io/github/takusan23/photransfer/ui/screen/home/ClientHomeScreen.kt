@@ -22,6 +22,7 @@ import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.tool.WorkManagerTool
 import io.github.takusan23.photransfer.ui.component.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,17 +30,23 @@ import kotlinx.coroutines.launch
 fun ClientHomeScreen() {
     val context = LocalContext.current
     val dataStore = context.dataStore.data.collectAsState(initial = null)
-    val isRunning = dataStore.value?.get(SettingKeyObject.IS_RUNNING) ?: true
     // サーバー検索
     val serverFindFlow = remember { NetworkServiceDiscovery(context).findDevice() }
     val findServer = serverFindFlow.collectAsState(initial = null)
 
-    // WorkManager（定期実行するやつ）起動
-    LaunchedEffect(key1 = isRunning, block = {
-        if (isRunning) {
-            WorkManagerTool.registerRepeat(context, false)
-        } else {
-            WorkManagerTool.unRegisterRepeat(context)
+    // WorkManager（定期実行するやつ）登録（もしくは解除）する。DataStoreを監視して
+    LaunchedEffect(key1 = Unit, block = {
+        context.dataStore.data.collect { preference ->
+
+            val isRunning = preference[SettingKeyObject.IS_RUNNING] ?: false
+            val isRequireCharging = preference[SettingKeyObject.SETTING_TRANSFER_REQUIRE_CHARGING] ?: true
+            val intervalMinute = preference[SettingKeyObject.CLIENT_TRANSFER_INTERVAL_MINUTE] ?: SettingKeyObject.DEFAULT_CLIENT_TRANSFER_INTERVAL_MINUTE
+
+            if (isRunning) {
+                WorkManagerTool.registerRepeat(context, isRequireCharging, intervalMinute)
+            } else {
+                WorkManagerTool.unRegisterRepeat(context)
+            }
         }
     })
 
@@ -66,13 +73,9 @@ fun ClientHomeScreen() {
                         // 転送画面
                         ClientOneShotTransferButton(dataStore = dataStore.value)
                         // 充電中のみ転送
-                        SettingTransferCharging(
-                            dataStore = dataStore.value,
-                            onValueChange = { isEnable ->
-                                // 定期実行（WorkManager）再登録
-                                WorkManagerTool.registerRepeat(context, isEnable)
-                            }
-                        )
+                        SettingTransferCharging(dataStore = dataStore.value)
+                        // 定期実行の間隔
+                        ClientTransferInterval(dataStore = dataStore.value)
                     } else {
                         ServerNotFoundInfo()
                     }
