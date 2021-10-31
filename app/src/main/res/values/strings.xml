@@ -43,4 +43,5 @@
     <string name="setting_interval_minute">Periodic execution interval</string>
     <string name="minute">Minute</string>
     <string name="setting_interval_minute_description">The minimum periodic run time interval is 15 minutes.</string>
+    <string name="license">License</string>
 </resources>

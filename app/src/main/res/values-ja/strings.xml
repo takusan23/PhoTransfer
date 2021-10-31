@@ -44,4 +44,5 @@
     <string name="setting_interval_minute">定期実行の間隔</string>
     <string name="minute">分</string>
     <string name="setting_interval_minute_description">最低定期実行時間間隔は15分です。</string>
+    <string name="license">ライセンス</string>
 </resources>

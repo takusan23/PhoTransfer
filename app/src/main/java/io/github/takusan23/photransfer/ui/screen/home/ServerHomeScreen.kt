@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -21,18 +24,17 @@ import io.github.takusan23.photransfer.R
 import io.github.takusan23.photransfer.service.PhoTransferService
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
-import io.github.takusan23.photransfer.ui.component.LabelSwitch
-import io.github.takusan23.photransfer.ui.component.ServerFolderPathInfo
-import io.github.takusan23.photransfer.ui.component.ServerInfo
-import io.github.takusan23.photransfer.ui.component.SettingTransferCharging
+import io.github.takusan23.photransfer.ui.component.*
 import kotlinx.coroutines.launch
 
 /**
- * サーバー画面
+ * サーバーホーム画面
+ *
+ * @param onNavigate 画面遷移してほしいときに呼ばれる
  * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServerHomeScreen() {
+fun ServerHomeScreen(onNavigate: (String) -> Unit) {
     val context = LocalContext.current
     val dataStore = context.dataStore.data.collectAsState(initial = null)
     // 実行中？
@@ -52,7 +54,11 @@ fun ServerHomeScreen() {
             MediumTopAppBar(title = { Text(text = stringResource(id = R.string.server_home_title)) })
         },
         content = {
-            Box(modifier = Modifier.padding(it)) {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
 
                     // 有効、無効スイッチ
@@ -66,6 +72,10 @@ fun ServerHomeScreen() {
 
                     // 保存先
                     ServerFolderPathInfo()
+
+                    Divider(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp))
+                    // ライセンス
+                    LicenseButton(onNavigate = onNavigate)
 
                 }
             }

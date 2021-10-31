@@ -26,7 +26,10 @@ fun MainScreen() {
             NavHost(navController = navController, startDestination = NavigationLinkList.HomeScreen) {
                 // ホーム画面？
                 composable(NavigationLinkList.HomeScreen) {
-                    HomeScreen(onNavigation = { navController.navigate(it) })
+                    HomeScreen(onNavigate = { navController.navigate(it) })
+                }
+                composable(NavigationLinkList.LicenseScreen) {
+                    LicenseScreen(onBack = { navController.popBackStack() })
                 }
                 // 初期設定画面
                 navigation(route = NavigationLinkList.SetupScreen, startDestination = NavigationLinkList.SelectSetupScreen) {

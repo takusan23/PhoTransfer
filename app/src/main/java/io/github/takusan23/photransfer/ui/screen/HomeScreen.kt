@@ -1,11 +1,13 @@
 package io.github.takusan23.photransfer.ui.screen
 
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 
 /**
@@ -13,12 +15,12 @@ import kotlinx.coroutines.flow.first
  *
  * 初期設定が終わってなくてもまずこの画面を出す。この画面で判断する
  *
- * @param onNavigation 画面遷移してほしいときに呼ばれる
+ * @param onNavigate 画面遷移してほしいときに呼ばれる
  * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onNavigation: (String) -> Unit,
+    onNavigate: (String) -> Unit,
 ) {
 
     // DataStore読み出し
@@ -34,14 +36,14 @@ fun HomeScreen(
             mode.value = settingModeValue
         } else {
             // 初期設定まだしてない
-            onNavigation(NavigationLinkList.SetupScreen)
+            onNavigate(NavigationLinkList.SetupScreen)
         }
     })
 
     // それぞれの画面へ、初回起動時はセットアップ画面へ飛ばす
     when (mode.value) {
-        SettingKeyObject.MODE_SERVER -> ServerHomeScreen()
-        SettingKeyObject.MODE_CLIENT -> ClientHomeScreen()
+        SettingKeyObject.MODE_SERVER -> ServerHomeScreen(onNavigate = onNavigate)
+        SettingKeyObject.MODE_CLIENT -> ClientHomeScreen(onNavigate = onNavigate)
     }
 
 }

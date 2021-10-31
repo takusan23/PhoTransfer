@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
@@ -25,9 +27,14 @@ import io.github.takusan23.photransfer.ui.component.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+/**
+ * クライアントホーム画面
+ *
+ * @param onNavigate 画面遷移してほしいときに呼ばれる
+ * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClientHomeScreen() {
+fun ClientHomeScreen(onNavigate: (String) -> Unit) {
     val context = LocalContext.current
     val dataStore = context.dataStore.data.collectAsState(initial = null)
     // サーバー検索
@@ -55,7 +62,11 @@ fun ClientHomeScreen() {
             LargeTopAppBar(title = { Text(text = stringResource(id = R.string.client_home_title)) })
         },
         content = {
-            Box(modifier = Modifier.padding(it)) {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
 
                     // 有効、無効スイッチ
@@ -68,17 +79,21 @@ fun ClientHomeScreen() {
                         ClientServerInfo(nsdServiceInfo = findServer.value!!)
                         // 写真転送ボタン
                         ManualUploadButton(findServer = findServer.value!!)
-                        Divider()
-                        Spacer(modifier = Modifier.padding(top = 20.dp))
-                        // 転送画面
-                        ClientOneShotTransferButton(dataStore = dataStore.value)
-                        // 充電中のみ転送
-                        SettingTransferCharging(dataStore = dataStore.value)
-                        // 定期実行の間隔
-                        ClientTransferInterval(dataStore = dataStore.value)
                     } else {
                         ServerNotFoundInfo()
                     }
+
+                    Divider(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp))
+                    // 転送画面
+                    ClientOneShotTransferButton(dataStore = dataStore.value)
+                    // 充電中のみ転送
+                    SettingTransferCharging(dataStore = dataStore.value)
+                    // 定期実行の間隔
+                    ClientTransferInterval(dataStore = dataStore.value)
+
+                    Divider(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp))
+                    // ライセンス
+                    LicenseButton(onNavigate = onNavigate)
 
                 }
             }
