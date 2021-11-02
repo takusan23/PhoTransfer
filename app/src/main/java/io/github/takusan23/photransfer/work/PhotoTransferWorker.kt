@@ -17,6 +17,7 @@ import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.tool.NetworkCheckTool
 import io.github.takusan23.photransfer.tool.PhoTransferClientTool
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,6 +29,9 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
     /** 通知ID */
     private val NOTIFICATION_ID = 1031
 
+    /** タイムアウト。1分 */
+    private val TIMEOUT_MS = 60 * 1000L
+
     /**
      * お仕事内容。
      * */
@@ -36,10 +40,13 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
         if (!NetworkCheckTool.isConnectionWiFi(context)) {
             return Result.failure()
         }
-        // PhoTransferサーバー探す
-        val findServer = NetworkServiceDiscovery(context).findDevice().first() ?: return Result.failure()
+        // PhoTransferサーバー探す。10秒以内に見つけることが出来ない場合は終了
+        val findServer = withTimeoutOrNull(TIMEOUT_MS) {
+            NetworkServiceDiscovery(context).findDevice().first()
+        } ?: return Result.failure()
         val ipAddress = findServer.host.hostAddress!!
         val port = findServer.port
+
         // MediaStoreから写真取得
         val setting = context.dataStore.data.first()
         val latestUploadDate = setting[SettingKeyObject.CLIENT_LATEST_TRANSFER_DATE]!!
@@ -59,6 +66,7 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
             // IDからUriをもらう
             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
             cursor.moveToNext()
+            println("うらる：$uri")
             uri
         }.map { uri ->
             // 転送開始

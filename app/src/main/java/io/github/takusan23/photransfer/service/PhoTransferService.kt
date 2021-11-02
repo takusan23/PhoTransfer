@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,6 +23,7 @@ import io.github.takusan23.photransfer.tool.MediaStoreTool
 import io.github.takusan23.photransfer.tool.NetworkCheckTool
 import io.github.takusan23.server.PhoTransferServer
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import java.io.File
 
@@ -72,9 +74,30 @@ class PhoTransferService : Service() {
         registerBroadcast()
         // ネットワーク状態監視
         registerNetworkListener()
+        // WakeLock登録
+        registerWakeLock()
         // サービス起動
         scope.launch { dataStore.edit { it[SettingKeyObject.IS_RUNNING] = true } }
 
+    }
+
+    /**
+     * WakeLockに登録する
+     *
+     * コルーチンでキャンセルされるはず
+     * */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun registerWakeLock() {
+        scope.launch {
+            callbackFlow<Unit> {
+                val wakeLock: PowerManager.WakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+                    newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "PhoTransfer::ServiceWakeLockTag").apply {
+                        acquire()
+                    }
+                }
+                awaitClose { wakeLock.release() }
+            }.collect()
+        }
     }
 
     /** Wi-Fiに接続されているか監視する */
@@ -91,6 +114,7 @@ class PhoTransferService : Service() {
 
             // Flowを連結させる
             merge(chargingFlow, wifiConnectionFlow).collect {
+                //  println("あっぷでーと：${SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis())}")
                 val isWiFiConnecting = NetworkCheckTool.isConnectionWiFi(this@PhoTransferService)
                 // 充電中か、isRequireChargingがfalseなら無条件true
                 val isCharging = if (isRequireCharging) ChargingCheckTool.isCharging(this@PhoTransferService) else true
@@ -119,7 +143,7 @@ class PhoTransferService : Service() {
         serverJob = scope.launch {
             // ポート番号
             val portNumber = dataStore.data.first()[SettingKeyObject.PORT_NUMBER] ?: SettingKeyObject.DEFAULT_PORT_NUMBER
-            // ローカルネットワークへ登録
+/*
             launch {
                 val networkServiceDiscovery = NetworkServiceDiscovery(this@PhoTransferService)
                 networkServiceDiscovery.registerService(portNumber).collect { info ->
@@ -137,6 +161,31 @@ class PhoTransferService : Service() {
                     MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, File(filePath), true)
                 }
             }
+*/
+            while (isActive) {
+                // なんか勝手にサーバー落ちてるしNSDサービスも落ちてるので定期的に再起動する
+                launch {
+                    val networkServiceDiscovery = NetworkServiceDiscovery(this@PhoTransferService)
+                    networkServiceDiscovery.registerService(portNumber).collect { info ->
+                        // DataStoreに入れる
+                        dataStore.edit { it[SettingKeyObject.SERVER_SIDE_DEVICE_NAME] = info.serviceName }
+                        // 通知出し直す
+                        showNotification("${getString(R.string.device_name)} : ${info.serviceName}")
+                    }
+                }
+                // PhoTransferサーバー起動
+                launch {
+                    val server = PhoTransferServer()
+                    server.startServer(portNumber, receivePhotoFolder.path).collect { (deviceName, filePath) ->
+                        // 保存に成功すると呼ばれるので、MediaStoreへ保存する
+                        MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, File(filePath), true)
+                    }
+                }
+                // なんか定期的に再起動しないとどっちも4んでる。なぜ？
+                delay(10 * 60 * 1000L)// 10 min
+                shutdownServer("再起動中です")
+            }
+
         }
         showNotification()
     }
