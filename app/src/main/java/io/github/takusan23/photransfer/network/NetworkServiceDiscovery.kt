@@ -29,6 +29,9 @@ class NetworkServiceDiscovery(private val context: Context) {
     /** NSDマネージャー */
     private val nsdManager = context.getSystemService(Context.NSD_SERVICE) as NsdManager
 
+    /** サービス名。PhoTransfer + 端末の名前が入る */
+    private val SERVICE_NAME = "PhoTransfer_${Build.MODEL}".replace(" ", "_")
+
     /**
      * ローカルネットワークに登録する
      *
@@ -38,7 +41,7 @@ class NetworkServiceDiscovery(private val context: Context) {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun registerService(port: Int) = channelFlow {
         val serviceInfo = NsdServiceInfo().apply {
-            serviceName = "PhoTransfer (${Build.MODEL})"
+            serviceName = SERVICE_NAME
             serviceType = SERVICE_TYPE // プロトコルとトランスポート層を指定？
             setPort(port)
         }
@@ -63,7 +66,7 @@ class NetworkServiceDiscovery(private val context: Context) {
         }
         nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
         // Flow終了時に登録解除する
-        awaitClose { nsdManager.unregisterService(registrationListener) }
+        // awaitClose { nsdManager.unregisterService(registrationListener) }
     }
 
     /**

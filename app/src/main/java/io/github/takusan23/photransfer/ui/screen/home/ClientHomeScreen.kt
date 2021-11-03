@@ -111,7 +111,7 @@ fun ClientHomeScreen(onNavigate: (String) -> Unit) {
 fun ClientEnableSwitch(dataStore: Preferences?) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val isRunning = dataStore?.get(SettingKeyObject.IS_RUNNING) ?: true
+    val isRunning = dataStore?.get(SettingKeyObject.IS_RUNNING) ?: false
 
     LabelSwitch(
         text = if (isRunning) stringResource(id = R.string.running_client) else stringResource(id = R.string.client_disable_title),

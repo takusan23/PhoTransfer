@@ -10,7 +10,6 @@ import io.ktor.server.netty.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -75,7 +74,7 @@ class PhoTransferServer {
         }
         // サーバースタート。スレッドブロックはしない(Flowで流すので止められたら困る)
         server.start(wait = false)
-        awaitClose { server.stop(1000, 1000) }
+       // awaitClose { server.stop(1000, 1000) }
     }
 
 }

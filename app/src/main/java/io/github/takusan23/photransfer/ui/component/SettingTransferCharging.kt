@@ -26,7 +26,7 @@ fun SettingTransferCharging(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     // 充電時のみ転送
-    val isRequireCharging = dataStore?.get(SettingKeyObject.SETTING_TRANSFER_REQUIRE_CHARGING) ?: true
+    val isRequireCharging = dataStore?.get(SettingKeyObject.SETTING_TRANSFER_REQUIRE_CHARGING) ?: false
 
     HomeScreenSwitchItem(
         text = stringResource(id = R.string.setting_transfer_charging_only),

@@ -15,7 +15,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.datastore.preferences.core.edit
 import io.github.takusan23.photransfer.R
-import io.github.takusan23.photransfer.network.NetworkServiceDiscovery
+import io.github.takusan23.photransfer.network.AlternativeNSD
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.tool.ChargingCheckTool
@@ -74,11 +74,8 @@ class PhoTransferService : Service() {
         registerBroadcast()
         // ネットワーク状態監視
         registerNetworkListener()
-        // WakeLock登録
-        registerWakeLock()
         // サービス起動
         scope.launch { dataStore.edit { it[SettingKeyObject.IS_RUNNING] = true } }
-
     }
 
     /**
@@ -143,8 +140,16 @@ class PhoTransferService : Service() {
         serverJob = scope.launch {
             // ポート番号
             val portNumber = dataStore.data.first()[SettingKeyObject.PORT_NUMBER] ?: SettingKeyObject.DEFAULT_PORT_NUMBER
-/*
+
             launch {
+                val alternativeNSD = AlternativeNSD(this@PhoTransferService)
+                alternativeNSD.registerAltNSD(portNumber).collect { serviceName ->
+                    // DataStoreに入れる
+                    dataStore.edit { it[SettingKeyObject.SERVER_SIDE_DEVICE_NAME] = serviceName }
+                    // 通知出し直す
+                    showNotification("${getString(R.string.device_name)} : ${serviceName}")
+                }
+/*
                 val networkServiceDiscovery = NetworkServiceDiscovery(this@PhoTransferService)
                 networkServiceDiscovery.registerService(portNumber).collect { info ->
                     // DataStoreに入れる
@@ -152,6 +157,7 @@ class PhoTransferService : Service() {
                     // 通知出し直す
                     showNotification("${getString(R.string.device_name)} : ${info.serviceName}")
                 }
+*/
             }
             // PhoTransferサーバー起動
             launch {
@@ -161,7 +167,8 @@ class PhoTransferService : Service() {
                     MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, File(filePath), true)
                 }
             }
-*/
+
+/*
             while (isActive) {
                 // なんか勝手にサーバー落ちてるしNSDサービスも落ちてるので定期的に再起動する
                 launch {
@@ -183,8 +190,10 @@ class PhoTransferService : Service() {
                 }
                 // なんか定期的に再起動しないとどっちも4んでる。なぜ？
                 delay(10 * 60 * 1000L)// 10 min
+                println("再起動中です ${SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis())}")
                 shutdownServer("再起動中です")
             }
+*/
 
         }
         showNotification()

@@ -20,9 +20,6 @@
     <!-- Wi-Fi接続コールバックを受けるため -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- Service止めないように？ -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
