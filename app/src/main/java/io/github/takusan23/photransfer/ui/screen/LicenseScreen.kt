@@ -24,6 +24,7 @@ fun LicenseScreen(
     onBack: () -> Unit,
 ) {
     val licenseList = listOf(rxDnssd, materialIcon, ktor, kotlinCoroutine, okHttp)
+
     Scaffold(
         topBar = {
             SmallTopAppBar(

@@ -26,7 +26,7 @@
     <string name="request_storage_write_permission_description">Android 9以前の端末では、写真フォルダ内にフォルダを作成できないので、ストレージ書き込み権限を付与してください。</string>
     <string name="permission_request_button">権限を付与</string>
     <string name="send_device_name">送信先</string>
-    <string name="send_complete">送信に成功しました</string>
+    <string name="send_complete">転送に成功しました</string>
     <string name="manual_send">写真を選んで転送</string>
     <string name="save_folder">保存先</string>
     <string name="not_found_device">現在利用できません。受け付け側（サーバー側）を検出できませんでした。</string>
@@ -45,4 +45,10 @@
     <string name="minute">分</string>
     <string name="setting_interval_minute_description">最低定期実行時間間隔は15分です。</string>
     <string name="license">ライセンス</string>
+    <string name="kono_app">このアプリについて</string>
+    <string name="kono_app_source_code">ソースコード</string>
+    <string name="kono_app_source_code_description">GitHubで見れます</string>
+    <string name="kono_app_twitter">Twitter</string>
+    <string name="kono_app_twitter_description">\@takusan__23</string>
+    <string name="manual_send_progress">画像を転送中</string>
 </resources>

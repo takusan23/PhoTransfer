@@ -3,6 +3,9 @@ package io.github.takusan23.photransfer.ui.screen
 /** ナビゲーション遷移先一覧 */
 object NavigationLinkList {
 
+    /** このアプリについて */
+    const val KonoAppScreen = "kono_app"
+
     /** ライセンス画面 */
     const val LicenseScreen = "license"
 

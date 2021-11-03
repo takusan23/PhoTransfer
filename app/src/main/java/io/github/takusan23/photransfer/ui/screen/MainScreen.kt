@@ -1,18 +1,19 @@
 package io.github.takusan23.photransfer.ui.screen
 
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import io.github.takusan23.photransfer.ui.SetSystemBarColor
 import io.github.takusan23.photransfer.ui.screen.setting.ClientSettingScreen
 import io.github.takusan23.photransfer.ui.screen.setting.ServerSettingScreen
 import io.github.takusan23.photransfer.ui.theme.PhoTransferTheme
 
 /**
- * 最初に表示される画面
+ * 最初に表示される画面。Compose EntryPoint
  *
  * ルーティングもここ
  * */
@@ -22,12 +23,23 @@ fun MainScreen() {
     PhoTransferTheme(isDynamicColor = true) {
         Surface {
 
+            // システムバーの色の設定
+            SetSystemBarColor(
+                isStatusBar = true,
+                isNavigationBar = true
+            )
+
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = NavigationLinkList.HomeScreen) {
                 // ホーム画面？
                 composable(NavigationLinkList.HomeScreen) {
                     HomeScreen(onNavigate = { navController.navigate(it) })
                 }
+                // このアプリについて
+                composable(NavigationLinkList.KonoAppScreen) {
+                    KonoAppScreen(onBack = { navController.popBackStack() })
+                }
+                // オープンソースライセンス
                 composable(NavigationLinkList.LicenseScreen) {
                     LicenseScreen(onBack = { navController.popBackStack() })
                 }

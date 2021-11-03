@@ -92,8 +92,10 @@ fun ClientHomeScreen(onNavigate: (String) -> Unit) {
                     ClientTransferInterval(dataStore = dataStore.value)
 
                     Divider(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp))
+                    // このアプリについて
+                    HomeScreenKonoAppButton(onClick = { onNavigate(NavigationLinkList.KonoAppScreen) })
                     // ライセンス
-                    LicenseButton(onNavigate = onNavigate)
+                    LicenseButton(onClick = { onNavigate(NavigationLinkList.LicenseScreen) })
 
                 }
             }

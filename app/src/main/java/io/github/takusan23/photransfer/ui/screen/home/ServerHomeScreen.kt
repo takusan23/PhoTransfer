@@ -25,6 +25,8 @@ import io.github.takusan23.photransfer.service.PhoTransferService
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.ui.component.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -37,16 +39,19 @@ import kotlinx.coroutines.launch
 fun ServerHomeScreen(onNavigate: (String) -> Unit) {
     val context = LocalContext.current
     val dataStore = context.dataStore.data.collectAsState(initial = null)
-    // 実行中？
-    val isRunning = dataStore.value?.get(SettingKeyObject.IS_RUNNING) ?: false
 
     // サービス起動
-    LaunchedEffect(key1 = isRunning, block = {
-        if (isRunning) {
-            PhoTransferService.startService(context)
-        } else {
-            PhoTransferService.stopService(context)
-        }
+    LaunchedEffect(key1 = Unit, block = {
+        // Flowでサービス有効かどうかを監視しておく
+        context.dataStore.data
+            .map { it[SettingKeyObject.IS_RUNNING] ?: false }
+            .collect { isRunning ->
+                if (isRunning) {
+                    PhoTransferService.startService(context)
+                } else {
+                    PhoTransferService.stopService(context)
+                }
+            }
     })
 
     Scaffold(
@@ -72,10 +77,11 @@ fun ServerHomeScreen(onNavigate: (String) -> Unit) {
 
                     // 保存先
                     ServerFolderPathInfo()
-
                     Divider(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp))
+                    // このアプリについて
+                    HomeScreenKonoAppButton(onClick = { onNavigate(NavigationLinkList.KonoAppScreen) })
                     // ライセンス
-                    LicenseButton(onNavigate = onNavigate)
+                    LicenseButton(onClick = { onNavigate(NavigationLinkList.LicenseScreen) })
 
                 }
             }

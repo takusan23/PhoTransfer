@@ -32,9 +32,6 @@ class PhoTransferService : Service() {
     /** 通知マネージャー */
     private val notificationManager by lazy { NotificationManagerCompat.from(this) }
 
-    /** 通知のID */
-    private val NOTIFICATION_ID = 1030
-
     /** コルーチンスコープ */
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -140,7 +137,7 @@ class PhoTransferService : Service() {
         serverJob = scope.launch {
             // ポート番号
             val portNumber = dataStore.data.first()[SettingKeyObject.PORT_NUMBER] ?: SettingKeyObject.DEFAULT_PORT_NUMBER
-
+            // ローカルから見つかるように
             launch {
                 val alternativeNSD = AlternativeNSD(this@PhoTransferService)
                 alternativeNSD.registerAltNSD(portNumber).collect { serviceName ->
@@ -149,15 +146,6 @@ class PhoTransferService : Service() {
                     // 通知出し直す
                     showNotification("${getString(R.string.device_name)} : ${serviceName}")
                 }
-/*
-                val networkServiceDiscovery = NetworkServiceDiscovery(this@PhoTransferService)
-                networkServiceDiscovery.registerService(portNumber).collect { info ->
-                    // DataStoreに入れる
-                    dataStore.edit { it[SettingKeyObject.SERVER_SIDE_DEVICE_NAME] = info.serviceName }
-                    // 通知出し直す
-                    showNotification("${getString(R.string.device_name)} : ${info.serviceName}")
-                }
-*/
             }
             // PhoTransferサーバー起動
             launch {
@@ -167,34 +155,6 @@ class PhoTransferService : Service() {
                     MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, File(filePath), true)
                 }
             }
-
-/*
-            while (isActive) {
-                // なんか勝手にサーバー落ちてるしNSDサービスも落ちてるので定期的に再起動する
-                launch {
-                    val networkServiceDiscovery = NetworkServiceDiscovery(this@PhoTransferService)
-                    networkServiceDiscovery.registerService(portNumber).collect { info ->
-                        // DataStoreに入れる
-                        dataStore.edit { it[SettingKeyObject.SERVER_SIDE_DEVICE_NAME] = info.serviceName }
-                        // 通知出し直す
-                        showNotification("${getString(R.string.device_name)} : ${info.serviceName}")
-                    }
-                }
-                // PhoTransferサーバー起動
-                launch {
-                    val server = PhoTransferServer()
-                    server.startServer(portNumber, receivePhotoFolder.path).collect { (deviceName, filePath) ->
-                        // 保存に成功すると呼ばれるので、MediaStoreへ保存する
-                        MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, File(filePath), true)
-                    }
-                }
-                // なんか定期的に再起動しないとどっちも4んでる。なぜ？
-                delay(10 * 60 * 1000L)// 10 min
-                println("再起動中です ${SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis())}")
-                shutdownServer("再起動中です")
-            }
-*/
-
         }
         showNotification()
     }
@@ -259,6 +219,9 @@ class PhoTransferService : Service() {
     }
 
     companion object {
+
+        /** 通知のID */
+        const val NOTIFICATION_ID = 1030
 
         /**
          * サービスを起動する

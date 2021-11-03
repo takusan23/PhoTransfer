@@ -3,11 +3,9 @@ package io.github.takusan23.photransfer.ui.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -112,6 +110,61 @@ fun HomeScreenSwitchItem(
             )
         }
     }
+}
+
+/**
+ * 進捗付き項目
+ *
+ * @param modifier Modifier
+ * @param icon アイコン
+ * @param text テキスト
+ * @param max 最大値
+ * @param current 現在の値
+ * @param description 説明
+ * @param containerColor 背景色
+ * @param contentColor コンテンツの色
+ * @param onClick 押したとき
+ * @param shape 丸くしたいなら
+ * */
+@Composable
+fun HomeScreenProgressItem(
+    modifier: Modifier = Modifier,
+    text: String,
+    max: Int = 10,
+    current: Int = 5,
+    description: String? = null,
+    icon: Painter,
+    containerColor: Color = Color.Transparent,
+    shape: Shape = RectangleShape,
+    contentColor: Color = contentColorFor(backgroundColor = containerColor),
+    onClick: () -> Unit = {},
+) {
+    Surface(
+        modifier = modifier,
+        onClick = onClick,
+        interactionSource = remember { MutableInteractionSource() },
+        indication = rememberRipple(),
+        color = containerColor,
+        shape = shape,
+        contentColor = contentColor,
+        content = {
+            Column {
+                CommonHomeScreenItem(
+                    icon = icon,
+                    text = text,
+                    description = description
+                )
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                    progress = current.toFloat() / max.toFloat()
+                )
+            }
+        }
+    )
+
 }
 
 /**
