@@ -25,7 +25,7 @@ object PhoTransferClientTool {
         // 送信
         val isSuccessful = PhoTransferClient.sendData(
             ipAddress = ipAddress,
-            deviceName = Build.DEVICE,
+            deviceName = Build.MODEL,
             port = port,
             file = tempPhoto
         )

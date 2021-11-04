@@ -64,9 +64,8 @@ class PhoTransferService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        val isWiFiConnected = NetworkCheckTool.isConnectionWiFi(this)
         // 通知出す
-        showNotification(if (isWiFiConnected) getString(R.string.running_server) else getString(R.string.wait_wifi_connection))
+        showNotification(getString(R.string.init_server))
         // ブロードキャストを登録
         registerBroadcast()
         // ネットワーク状態監視
@@ -156,7 +155,6 @@ class PhoTransferService : Service() {
                 }
             }
         }
-        showNotification()
     }
 
     /**
@@ -210,6 +208,7 @@ class PhoTransferService : Service() {
         unregisterReceiver(broadcastReceiver)
         runBlocking {
             dataStore.edit { it[SettingKeyObject.IS_RUNNING] = false }
+            dataStore.edit { it[SettingKeyObject.SERVER_SIDE_DEVICE_NAME] = "---" }
             scope.cancel()
         }
     }
