@@ -36,7 +36,7 @@ class AlternativeNSD(private val context: Context) {
         val service = dnssd.register(SERVICE_NAME, SERVICE_TYPE, port, object : RegisterListener {
             override fun operationFailed(service: DNSSDService?, errorCode: Int) {
                 // コケたら
-                println("えらー：$errorCode")
+
             }
 
             override fun serviceRegistered(registration: DNSSDRegistration?, flags: Int, serviceName: String?, regType: String?, domain: String?) {

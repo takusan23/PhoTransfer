@@ -52,4 +52,5 @@
     <string name="kono_app_twitter_description">\@takusan__23</string>
     <string name="manual_send_progress">画像を転送中</string>
     <string name="init_server">受信側（サーバー側）を準備中です。</string>
+    <string name="transfer">転送する</string>
 </resources>

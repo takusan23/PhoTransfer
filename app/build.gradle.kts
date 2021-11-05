@@ -73,6 +73,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.4.0-beta01")
     // Compose + Material You
     implementation("androidx.compose.material3:material3:1.0.0-alpha01")
+    // Composeで画像読み込む
+    implementation("io.coil-kt:coil-compose:1.4.0")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.3.1")

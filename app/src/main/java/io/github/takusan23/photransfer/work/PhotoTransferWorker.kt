@@ -66,7 +66,6 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
             // IDからUriをもらう
             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
             cursor.moveToNext()
-            println("うらる：$uri")
             uri
         }.map { uri ->
             // 転送開始
