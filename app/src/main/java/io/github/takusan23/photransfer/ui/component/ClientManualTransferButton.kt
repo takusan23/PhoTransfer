@@ -48,8 +48,10 @@ fun ManualUploadButton(modifier: Modifier = Modifier, findServer: NsdServiceInfo
             }
 
             // 完了
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, context.getString(R.string.send_complete), Toast.LENGTH_SHORT).show()
+            if (uriList.isNotEmpty()) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, context.getString(R.string.send_complete), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     })
