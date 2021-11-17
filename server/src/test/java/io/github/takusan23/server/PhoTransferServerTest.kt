@@ -9,9 +9,10 @@ class PhoTransferServerTest {
     @Test
     fun testStartServer() {
         val server = PhoTransferServer()
-        // Windows以外は知らん。
+        // Windows以外は知らん。転送先フォルダ
         val windowsUserDownloadFolderPath = """${System.getProperty("user.home")}\Downloads"""
         runBlocking {
+            // サーバー起動。APIのテストが出来ます。
             server.startServer(saveFolderPath = windowsUserDownloadFolderPath).collect {
                 println(it)
             }

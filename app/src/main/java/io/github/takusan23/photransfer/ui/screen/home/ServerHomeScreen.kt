@@ -71,6 +71,8 @@ fun ServerHomeScreen(onNavigate: (String) -> Unit) {
                         ServerEnableSwitch(dataStore = dataStore.value!!)
                         Spacer(modifier = Modifier.padding(top = 20.dp))
                         ServerInfo(dataStore = dataStore.value!!)
+                        // ブラウザ版クライアント
+                        BrowserLinkInfo(dataStore = dataStore.value!!)
                         // 充電中のみ
                         SettingTransferCharging(dataStore = dataStore.value!!)
                     }
