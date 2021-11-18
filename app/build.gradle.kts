@@ -15,7 +15,7 @@ android {
         minSdk = 24
         targetSdk = 31
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation("androidx.navigation:navigation-compose:2.4.0-beta01")
+    implementation("androidx.navigation:navigation-compose:2.4.0-beta02")
     // Compose + Material You
     implementation("androidx.compose.material3:material3:1.0.0-alpha01")
     // Composeで画像読み込む
@@ -83,7 +83,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.4.0")
 
     // WorkManager Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:2.7.0")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
 
     // Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")

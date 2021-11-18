@@ -4,7 +4,7 @@ buildscript {
     val kotlinVersion by extra("1.5.31")
 
     /** Composeのバージョン */
-    val composeVersion by extra("1.1.0-beta01")
+    val composeVersion by extra("1.1.0-beta03")
 
     repositories {
         google()
