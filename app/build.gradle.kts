@@ -14,7 +14,7 @@ android {
         applicationId = "io.github.takusan23.photransfer"
         minSdk = 24
         targetSdk = 31
-        versionCode = 1
+        versionCode = 2
         versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
