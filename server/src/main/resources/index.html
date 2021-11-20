@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ブラウザから転送</title>
+</head>
+
+<body>
+<div align="center">
+    <p>クリップボードの画像を送信するやつ</p>
+    <p><img id="paste_img" width="200" height="200" style="object-fit: cover"></p>
+    <p><input value="転送" type="button" onclick="postImage()"></p>
+</div>
+</body>
+
+<script>
+
+    // POSTするデータをMap形式で
+    let formData = new FormData();
+
+    // クリップボードから画像をゲット
+    document.onpaste = function (event) {
+        var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        var blob = items[0].getAsFile();
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            const base64Data = event.target.result;
+            formData.append("img", blob);
+            setImageData(base64Data);
+        };
+        // reader.onload を呼び出す
+        reader.readAsDataURL(blob);
+    }
+
+    // Imgタグへ値をセットする
+    const setImageData = (src) => {
+        document.getElementById('paste_img').src = src;
+    }
+
+    // POSTを実行する
+    const postImage = async () => {
+        const response = await fetch('/upload', {
+            method: 'POST',
+            headers: {
+                'Folder-Name': window.navigator.platform
+            },
+            body: formData
+        });
+        const isSuccessful = response.status == 200;
+        if (isSuccessful) {
+            alert('成功しました');
+        }
+    }
+</script>
+
+</html>
