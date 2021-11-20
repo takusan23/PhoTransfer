@@ -34,8 +34,19 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name=".service.StartQuickSettingTileService"
+            android:exported="true"
+            android:icon="@drawable/photransfer_icon"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <receiver
-            android:name=".service.SystemBootCompleteReceiver"
+            android:name=".receiver.SystemBootCompleteReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

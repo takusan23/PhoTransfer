@@ -27,6 +27,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import java.io.File
 
+/**
+ * サーバー側（写真受け取り側）は常に受付をするのでサービズで実行
+ * */
 class PhoTransferService : Service() {
 
     /** 通知マネージャー */

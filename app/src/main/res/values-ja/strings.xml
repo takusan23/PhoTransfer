@@ -54,4 +54,5 @@
     <string name="init_server">受信側（サーバー側）を準備中です。</string>
     <string name="transfer">転送する</string>
     <string name="browser_client_title">ブラウザ版クライアント URL</string>
+    <string name="disable_short_title">無効になっています</string>
 </resources>

@@ -1,8 +1,9 @@
-package io.github.takusan23.photransfer.service
+package io.github.takusan23.photransfer.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import io.github.takusan23.photransfer.service.PhoTransferService
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import kotlinx.coroutines.flow.first

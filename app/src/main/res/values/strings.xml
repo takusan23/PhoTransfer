@@ -53,4 +53,5 @@
     <string name="init_server">The receiving side (server side) is being prepared.</string>
     <string name="transfer">Transfer</string>
     <string name="browser_client_title">Browser version client URL</string>
+    <string name="disable_short_title">Is disabled</string>
 </resources>
