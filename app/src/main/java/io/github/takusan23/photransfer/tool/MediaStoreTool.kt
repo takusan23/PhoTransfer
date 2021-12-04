@@ -49,7 +49,15 @@ object MediaStoreTool {
          * */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // MediaStoreへファイル追加
-            val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues) ?: return@withContext
+            val uri = try {
+                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            } catch (e: Exception) {
+                // IllegalStateException: Failed to build unique file 例外対策。
+                // 新しいファイル（31）以上は生成できない模様。ので適当にユニークなファイル名に書き換える
+                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues.apply {
+                    put(MediaStore.Images.Media.DISPLAY_NAME, "${file.nameWithoutExtension}_${System.currentTimeMillis()}.${file.extension}")
+                })
+            } ?: return@withContext
             val outputStream = context.contentResolver.openOutputStream(uri)!!
             val inputStream = file.inputStream()
             // 書き込む
