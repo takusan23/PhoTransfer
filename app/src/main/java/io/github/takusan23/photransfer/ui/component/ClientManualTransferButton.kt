@@ -1,6 +1,5 @@
 package io.github.takusan23.photransfer.ui.component
 
-import android.net.nsd.NsdServiceInfo
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import io.github.takusan23.photransfer.R
+import io.github.takusan23.photransfer.data.ServerInfoData
 import io.github.takusan23.photransfer.tool.PhoTransferClientTool
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
  * @param findServer 転送先の情報。NetworkServiceDiscovery#findServer()参照
  * */
 @Composable
-fun ManualUploadButton(modifier: Modifier = Modifier, findServer: NsdServiceInfo) {
+fun ManualUploadButton(modifier: Modifier = Modifier, serverInfoData: ServerInfoData) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     // 進捗具合
@@ -41,8 +41,8 @@ fun ManualUploadButton(modifier: Modifier = Modifier, findServer: NsdServiceInfo
                 PhoTransferClientTool.uploadPhoto(
                     context,
                     uri,
-                    findServer.host.hostAddress!!,
-                    findServer.port
+                    serverInfoData.hostAddress,
+                    serverInfoData.portNumber
                 )
                 progressPair.value = uriList.size to index + 1
             }

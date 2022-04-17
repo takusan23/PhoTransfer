@@ -1,10 +1,6 @@
 package io.github.takusan23.photransfer.ui.component
 
-import android.net.nsd.NsdServiceInfo
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -19,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.takusan23.photransfer.R
+import io.github.takusan23.photransfer.data.ServerInfoData
 
 /** 検索中...画面 */
 @Composable
@@ -43,10 +40,10 @@ fun DeviceFindText() {
 /**
  * デバイス検索結果
  *
- * @param nsdServiceInfo 情報
+ * @param serverInfoData 情報
  * */
 @Composable
-fun DeviceFindResult(nsdServiceInfo: NsdServiceInfo) {
+fun DeviceFindResult(serverInfoData: ServerInfoData) {
     Column {
         Surface(
             color = MaterialTheme.colorScheme.primaryContainer,
@@ -58,18 +55,25 @@ fun DeviceFindResult(nsdServiceInfo: NsdServiceInfo) {
                     .padding(start = 10.dp, end = 10.dp)
             ) {
                 Text(
-                    text = "${stringResource(id = R.string.device_name)} : ${nsdServiceInfo.serviceName}",
+                    text = "${stringResource(id = R.string.device_name)} : ${serverInfoData.deviceName}",
                     modifier = Modifier.padding(top = 5.dp),
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "${stringResource(id = R.string.ip_address)} : ${nsdServiceInfo.host}",
+                    text = "${stringResource(id = R.string.ip_address)} : ${serverInfoData.hostAddress}",
                     modifier = Modifier.padding(top = 5.dp),
                 )
                 Text(
-                    text = "${stringResource(id = R.string.port)} : ${nsdServiceInfo.port}",
-                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp),
+                    text = "${stringResource(id = R.string.port)} : ${serverInfoData.portNumber}",
+                    modifier = Modifier.padding(top = 5.dp),
                 )
+                if (serverInfoData.isLatestServerData) {
+                    Text(
+                        text = stringResource(id = R.string.latest_connection_server_info),
+                        modifier = Modifier.padding(top = 5.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.padding(top = 5.dp, bottom = 5.dp))
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {

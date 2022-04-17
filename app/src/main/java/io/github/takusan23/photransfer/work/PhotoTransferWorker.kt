@@ -42,10 +42,10 @@ class PhotoTransferWorker(val context: Context, workerParams: WorkerParameters) 
         }
         // PhoTransferサーバー探す。10秒以内に見つけることが出来ない場合は終了
         val findServer = withTimeoutOrNull(TIMEOUT_MS) {
-            NetworkServiceDiscovery(context).findDevice().first()
+            NetworkServiceDiscovery(context).findServerOrGetLatestServer().first()
         } ?: return Result.failure()
-        val ipAddress = findServer.host.hostAddress!!
-        val port = findServer.port
+        val ipAddress = findServer.hostAddress
+        val port = findServer.portNumber
 
         // MediaStoreから写真取得
         val setting = context.dataStore.data.first()

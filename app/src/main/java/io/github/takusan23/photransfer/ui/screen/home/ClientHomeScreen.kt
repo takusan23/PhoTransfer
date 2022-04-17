@@ -38,8 +38,8 @@ fun ClientHomeScreen(onNavigate: (String) -> Unit) {
     val context = LocalContext.current
     val dataStore = context.dataStore.data.collectAsState(initial = null)
     // サーバー検索
-    val serverFindFlow = remember { NetworkServiceDiscovery(context).findDevice() }
-    val findServer = serverFindFlow.collectAsState(initial = null)
+    val serverFindFlow = remember { NetworkServiceDiscovery(context).findServerOrGetLatestServer() }
+    val serverInfo = serverFindFlow.collectAsState(initial = null)
 
     // WorkManager（定期実行するやつ）登録（もしくは解除）する。DataStoreを監視して
     LaunchedEffect(key1 = Unit, block = {
@@ -74,11 +74,11 @@ fun ClientHomeScreen(onNavigate: (String) -> Unit) {
 
                     Spacer(modifier = Modifier.padding(top = 20.dp))
 
-                    if (findServer.value != null) {
+                    if (serverInfo.value != null) {
                         // サーバー/転送先 情報
-                        ClientServerInfo(nsdServiceInfo = findServer.value!!)
+                        ClientServerInfo(serverInfoData = serverInfo.value!!)
                         // 写真転送ボタン
-                        ManualUploadButton(findServer = findServer.value!!)
+                        ManualUploadButton(serverInfoData = serverInfo.value!!)
                     } else {
                         ServerNotFoundInfo()
                     }

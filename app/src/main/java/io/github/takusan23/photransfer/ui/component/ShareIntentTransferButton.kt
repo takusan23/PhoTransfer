@@ -1,7 +1,6 @@
 package io.github.takusan23.photransfer.ui.component
 
 import android.net.Uri
-import android.net.nsd.NsdServiceInfo
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
@@ -16,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import io.github.takusan23.photransfer.R
-import io.github.takusan23.photransfer.network.NetworkServiceDiscovery
+import io.github.takusan23.photransfer.data.ServerInfoData
 import io.github.takusan23.photransfer.tool.PhoTransferClientTool
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,14 +25,14 @@ import kotlinx.coroutines.withContext
  * 共有からアプリを開いたときの画面にある転送ボタン
  *
  * @param modifier Modifier
- * @param nsdServerInfo サーバー情報。[NetworkServiceDiscovery]参照
+ * @param serverInfoData サーバー情報
  * @param onFinish 転送が終わったら呼ばれる。Toastが呼ばれる感じで
  * @param uriList 投稿する画像
  * */
 @Composable
 fun ShareIntentTransferButton(
     modifier: Modifier = Modifier,
-    nsdServerInfo: NsdServiceInfo,
+    serverInfoData: ServerInfoData,
     uriList: List<Uri>,
     onFinish: () -> Unit = {},
 ) {
@@ -52,8 +51,8 @@ fun ShareIntentTransferButton(
                 PhoTransferClientTool.uploadPhoto(
                     context,
                     uri,
-                    nsdServerInfo.host.hostAddress!!,
-                    nsdServerInfo.port
+                    serverInfoData.hostAddress,
+                    serverInfoData.portNumber
                 )
                 progressPair.value = uriList.size to index + 1
             }

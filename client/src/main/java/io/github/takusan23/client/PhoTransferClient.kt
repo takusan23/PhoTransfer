@@ -43,4 +43,26 @@ object PhoTransferClient {
         return@withContext response.isSuccessful
     }
 
+    /**
+     * サーバーにアクセスできるかの疎通確認を行う
+     *
+     * @param ipAddress サーバーのIPアドレス
+     * @param port ポート番号
+     * @return 成功時はtrue
+     * */
+    suspend fun checkIsServerLive(ipAddress: String = "localhost", port: Int = 4649) = withContext(Dispatchers.Default) {
+        // 適当に送って200ならok
+        val request = Request.Builder().apply {
+            url("http://${ipAddress}:${port}")
+            get()
+        }.build()
+        return@withContext try {
+            val response = okHttpClient.newCall(request).execute()
+            response.isSuccessful
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
 }

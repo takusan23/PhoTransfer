@@ -4,9 +4,17 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
+import androidx.datastore.preferences.core.edit
+import io.github.takusan23.client.PhoTransferClient
+import io.github.takusan23.photransfer.data.ServerInfoData
+import io.github.takusan23.photransfer.setting.SettingKeyObject
+import io.github.takusan23.photransfer.setting.dataStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 /**
  * android.net.nsdパッケージを使ってmDNSまがいなことをする
@@ -70,12 +78,84 @@ class NetworkServiceDiscovery(private val context: Context) {
     }
 
     /**
+     * ネットワーク検出を始めるが、前回のIPアドレスに変わらず存在する場合は前回の接続情報を返す（そっちのほうが早い）
+     *
+     * @return Flowを返します。ネットワークサービス詳細が流れてきます。
+     * */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun findServerOrGetLatestServer() = callbackFlow {
+        var discoveryListener: NsdManager.DiscoveryListener? = null
+        val setting = context.dataStore.data.first()
+        val latestPortNumber = setting[SettingKeyObject.CLIENT_LATEST_SERVER_PORT_NUMBER]
+        val latestAddress = setting[SettingKeyObject.CLIENT_LATEST_SERVER_IP_ADDRESS]
+        val latestDeviceName = setting[SettingKeyObject.CLIENT_LATEST_SERVER_DEVICE_NAME]
+        if (latestDeviceName != null && latestAddress != null && latestPortNumber != null && PhoTransferClient.checkIsServerLive(latestAddress, latestPortNumber)) {
+            // 生きていれば前回のままでOK
+            trySend(ServerInfoData(latestDeviceName, latestAddress, latestPortNumber, true))
+        } else {
+            // 無いので見つける
+            discoveryListener = object : NsdManager.DiscoveryListener {
+                override fun onStartDiscoveryFailed(serviceType: String?, errorCode: Int) {
+
+                }
+
+                override fun onStopDiscoveryFailed(serviceType: String?, errorCode: Int) {
+
+                }
+
+                override fun onDiscoveryStarted(serviceType: String?) {
+                    // 検出開始
+                }
+
+                override fun onServiceFound(serviceInfo: NsdServiceInfo?) {
+                    // ネットワークデバイス発見ｗｗｗｗ。接続してIPアドレスとポート番号を取得
+                    nsdManager.resolveService(serviceInfo, object : NsdManager.ResolveListener {
+                        override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
+
+                        }
+
+                        override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
+                            if (serviceInfo == null && serviceInfo?.host?.hostAddress == null) return
+                            trySend(ServerInfoData(
+                                deviceName = serviceInfo.serviceName,
+                                hostAddress = serviceInfo.host.hostAddress!!,
+                                portNumber = serviceInfo.port,
+                                isLatestServerData = false
+                            ))
+                            launch {
+                                // 保存する
+                                context.dataStore.edit {
+                                    it[SettingKeyObject.CLIENT_LATEST_SERVER_DEVICE_NAME] = serviceInfo.serviceName
+                                    it[SettingKeyObject.CLIENT_LATEST_SERVER_IP_ADDRESS] = serviceInfo.host.hostAddress!!
+                                    it[SettingKeyObject.CLIENT_LATEST_SERVER_PORT_NUMBER] = serviceInfo.port
+                                }
+                            }
+                        }
+                    })
+                }
+
+                override fun onDiscoveryStopped(serviceType: String?) {
+
+                }
+
+                override fun onServiceLost(serviceInfo: NsdServiceInfo?) {
+                    trySend(null)
+                }
+            }
+            // 登録
+            nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+        }
+        // Flow終了時に登録解除する
+        awaitClose { discoveryListener?.also { nsdManager.stopServiceDiscovery(it) } }
+    }
+
+    /**
      * ネットワーク検出を始める。見失った場合はnullをFlowに流します
      *
      * @return Flowを返します。ネットワークサービス詳細が流れてきます。
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun findDevice() = channelFlow {
+    private fun findDevice() = channelFlow {
         // 検出コールバック
         val discoveryListener = object : NsdManager.DiscoveryListener {
             override fun onStartDiscoveryFailed(serviceType: String?, errorCode: Int) {
@@ -98,7 +178,13 @@ class NetworkServiceDiscovery(private val context: Context) {
                     }
 
                     override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
-                        trySend(serviceInfo)
+                        if (serviceInfo == null && serviceInfo?.host?.hostAddress == null) return
+                        trySend(ServerInfoData(
+                            deviceName = serviceInfo.serviceName,
+                            hostAddress = serviceInfo.host.hostAddress!!,
+                            portNumber = serviceInfo.port,
+                            isLatestServerData = false
+                        ))
                     }
                 })
             }

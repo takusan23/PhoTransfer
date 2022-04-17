@@ -34,9 +34,9 @@ fun ShareIntentScreen(
     onClose: () -> Unit,
 ) {
     val context = LocalContext.current
-    // サーバー検索
-    val serverFindFlow = remember { NetworkServiceDiscovery(context).findDevice() }
-    val findServer = serverFindFlow.collectAsState(initial = null)
+    // 接続先情報
+    val networkServiceDiscovery = remember { NetworkServiceDiscovery(context).findServerOrGetLatestServer() }
+    val serverInfoData = networkServiceDiscovery.collectAsState(initial = null)
 
     PhoTransferTheme(isDynamicColor = true) {
 
@@ -59,12 +59,12 @@ fun ShareIntentScreen(
                         // 画像をカルーセルみたいに表示
                         CarouselImage(uriList = uriList)
                         // PhoTransferサーバーを検出できれば転送押せるように
-                        if (findServer.value != null) {
+                        if (serverInfoData.value != null) {
                             // サーバー/転送先 情報
-                            ClientServerInfo(nsdServiceInfo = findServer.value!!)
+                            ClientServerInfo(serverInfoData = serverInfoData.value!!)
                             // てんそーボタン
                             ShareIntentTransferButton(
-                                nsdServerInfo = findServer.value!!,
+                                serverInfoData = serverInfoData.value!!,
                                 uriList = uriList,
                                 onFinish = onClose
                             )

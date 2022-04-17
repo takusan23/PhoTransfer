@@ -54,4 +54,5 @@
     <string name="transfer">Transfer</string>
     <string name="browser_client_title">Browser version client URL</string>
     <string name="disable_short_title">Is disabled</string>
+    <string name="latest_connection_server_info">The same server information as last time is displayed (available).</string>
 </resources>

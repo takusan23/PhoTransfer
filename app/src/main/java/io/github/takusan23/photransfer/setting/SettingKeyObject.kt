@@ -31,6 +31,15 @@ object SettingKeyObject {
     /** 定期実行間隔 */
     val CLIENT_TRANSFER_INTERVAL_MINUTE = longPreferencesKey("client_transfer_interval_minute")
 
+    /** サーバーを見つけるのに時間がかかるので、前回のIPアドレスを控える */
+    val CLIENT_LATEST_SERVER_IP_ADDRESS = stringPreferencesKey("client_latest_server_ip_address")
+
+    /** サーバーを見つけるのに時間がかかるので、前回のポート番号を控える */
+    val CLIENT_LATEST_SERVER_PORT_NUMBER = intPreferencesKey("client_latest_server_port_number")
+
+    /** サーバーを見つけるのに時間がかかるので、前回のデバイス名を控える */
+    val CLIENT_LATEST_SERVER_DEVICE_NAME = stringPreferencesKey("client_latest_server_device_name")
+
     /** [mode]がクライアントモードだった場合 */
     const val MODE_CLIENT = "client_mode"
 

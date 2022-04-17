@@ -32,7 +32,7 @@ fun ClientSettingScreen(
     // デバイスが発見できるか試す
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val networkServiceDiscovery = remember { NetworkServiceDiscovery(context).findDevice() }
+    val networkServiceDiscovery = remember { NetworkServiceDiscovery(context).findServerOrGetLatestServer() }
     val findDevice = networkServiceDiscovery.collectAsState(initial = null)
     val isPermissionGranted = remember { mutableStateOf(false) }
 

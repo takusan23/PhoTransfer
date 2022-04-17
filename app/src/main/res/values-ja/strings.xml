@@ -55,4 +55,5 @@
     <string name="transfer">転送する</string>
     <string name="browser_client_title">ブラウザ版クライアント URL</string>
     <string name="disable_short_title">無効になっています</string>
+    <string name="latest_connection_server_info">前回と同じサーバーの情報を表示しています（利用可能）。</string>
 </resources>
