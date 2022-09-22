@@ -2,7 +2,6 @@ package io.github.takusan23.photransfer.ui
 
 import android.app.Activity
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.LocalAbsoluteTonalElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,20 +26,15 @@ import kotlin.math.ln
  * */
 @Composable
 fun SetSystemBarColor(
-    color: Color = MaterialTheme.colorScheme.surface,
+    color: Color = MaterialTheme.colorScheme.background,
     tonalElevation: Dp = 0.dp,
     isStatusBar: Boolean = true,
     isNavigationBar: Boolean = false,
 ) {
     val context = LocalContext.current
-    val applyColor = if (color == MaterialTheme.colorScheme.surface) {
-        MaterialTheme.colorScheme.applyTonalElevation(LocalAbsoluteTonalElevation.current + tonalElevation)
-    } else {
-        color
-    }
     // 変化したら適用
-    LaunchedEffect(key1 = applyColor, key2 = isStatusBar, key3 = isNavigationBar, block = {
-        val legacyColor = applyColor.toArgb()
+    LaunchedEffect(key1 = color, key2 = isStatusBar, key3 = isNavigationBar, block = {
+        val legacyColor = color.toArgb()
         if (isStatusBar) {
             (context as? Activity)?.window?.statusBarColor = android.graphics.Color.argb(
                 legacyColor.alpha,

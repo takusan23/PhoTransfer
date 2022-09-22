@@ -1,16 +1,15 @@
 package io.github.takusan23.server
 
-import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.withContext
@@ -35,10 +34,7 @@ class PhoTransferServer {
      * @param saveFolderPath 保存先。
      * @return 端末の名前と保存したファイルのパスをFlowで流します。
      * */
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun startServer(port: Int = 4649, saveFolderPath: String) = channelFlow {
-        // resources内のindex.htmlを取得。ブラウザ用投稿画面です
-        val htmlFile = this@PhoTransferServer::class.java.classLoader.getResource("index.html")!!.readText()
         val server = embeddedServer(Netty, port = port) {
             routing {
                 get("/") {
@@ -56,9 +52,10 @@ class PhoTransferServer {
                         へアクセスし、投稿したい画像をクリップボードから貼り付けて転送を押せばいいです。
                         """.trimIndent())
                 }
-                get("/browser") {
-                    call.respondText(htmlFile, ContentType.parse("text/html"))
-                }
+
+                // resources内のindex.htmlを取得。ブラウザ用投稿画面です
+                resource("/browser", "index.html")
+
                 post("/upload") {
                     // コンテキスト切り替えないと怒られる
                     withContext(Dispatchers.IO) {

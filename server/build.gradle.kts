@@ -11,8 +11,8 @@ java {
 dependencies {
     implementation(kotlin("stdlib"))
     // Ktor HttpServer
-    implementation("io.ktor:ktor-server-core:1.6.4")
-    implementation("io.ktor:ktor-server-netty:1.6.4")
+    implementation("io.ktor:ktor-server-core:2.1.1")
+    implementation("io.ktor:ktor-server-netty:2.1.1")
     implementation("ch.qos.logback:logback-classic:1.2.5")
     testImplementation("junit:junit:4.13.2")
 }

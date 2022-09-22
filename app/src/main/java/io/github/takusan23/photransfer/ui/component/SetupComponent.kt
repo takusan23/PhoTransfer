@@ -2,20 +2,14 @@ package io.github.takusan23.photransfer.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -102,6 +96,7 @@ fun SetupServerOrClientSelect(onNavigate: (String) -> Unit) {
  * @param description 説明
  * @param onClick 押したとき
  * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SetupButtons(
     modifier: Modifier = Modifier,
@@ -113,8 +108,6 @@ private fun SetupButtons(
     Surface(
         modifier = modifier,
         onClick = onClick,
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(),
         color = Color.Transparent,
         shape = RoundedCornerShape(size = 10.dp),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),

@@ -8,7 +8,6 @@ import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.tool.IPAddressTool
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 
 /**
@@ -91,8 +90,8 @@ class StartQuickSettingTileService : TileService() {
      * */
     override fun onClick() {
         super.onClick()
-        // 一応サーバーモードで、ロック画面（キーガード中）ではないことを確認
-        if (isServerMode && !isLocked) {
+        // サーバーモードで、キーガード中でも有効にできるように
+        if (isServerMode /*&& !isLocked */) {
             // 起動したり終了したり
             if (isRunning) {
                 PhoTransferService.stopService(this)

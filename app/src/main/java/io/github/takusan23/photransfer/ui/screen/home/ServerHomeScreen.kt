@@ -7,15 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,7 +23,6 @@ import io.github.takusan23.photransfer.service.PhoTransferService
 import io.github.takusan23.photransfer.setting.SettingKeyObject
 import io.github.takusan23.photransfer.setting.dataStore
 import io.github.takusan23.photransfer.ui.component.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -56,7 +53,10 @@ fun ServerHomeScreen(onNavigate: (String) -> Unit) {
 
     Scaffold(
         topBar = {
-            MediumTopAppBar(title = { Text(text = stringResource(id = R.string.server_home_title)) })
+            MediumTopAppBar(
+                title = { Text(text = stringResource(id = R.string.server_home_title)) },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = Color.Transparent)
+            )
         },
         content = {
             Box(

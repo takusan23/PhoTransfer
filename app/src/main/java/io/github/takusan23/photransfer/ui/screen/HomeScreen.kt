@@ -1,6 +1,5 @@
 package io.github.takusan23.photransfer.ui.screen
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.first
  *
  * @param onNavigate 画面遷移してほしいときに呼ばれる
  * */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigate: (String) -> Unit,

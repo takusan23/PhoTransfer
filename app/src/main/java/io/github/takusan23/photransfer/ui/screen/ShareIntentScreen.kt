@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,28 +50,29 @@ fun ShareIntentScreen(
                             Icon(painter = painterResource(id = R.drawable.ic_outline_close_24), contentDescription = null)
                         }
                     },
-                    title = { Text(text = stringResource(id = R.string.transfer)) }
+                    title = { Text(text = stringResource(id = R.string.transfer)) },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
                 )
             },
             content = {
-                Surface(modifier = Modifier.padding(it)) {
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        // 画像をカルーセルみたいに表示
-                        CarouselImage(uriList = uriList)
-                        // PhoTransferサーバーを検出できれば転送押せるように
-                        if (serverInfoData.value != null) {
-                            // サーバー/転送先 情報
-                            ClientServerInfo(serverInfoData = serverInfoData.value!!)
-                            // てんそーボタン
-                            ShareIntentTransferButton(
-                                serverInfoData = serverInfoData.value!!,
-                                uriList = uriList,
-                                onFinish = onClose
-                            )
-                        } else {
-                            ServerNotFoundInfo()
-                        }
+                Column(
+                    modifier = Modifier.padding(it),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // 画像をカルーセルみたいに表示
+                    CarouselImage(uriList = uriList)
+                    // PhoTransferサーバーを検出できれば転送押せるように
+                    if (serverInfoData.value != null) {
+                        // サーバー/転送先 情報
+                        ClientServerInfo(serverInfoData = serverInfoData.value!!)
+                        // てんそーボタン
+                        ShareIntentTransferButton(
+                            serverInfoData = serverInfoData.value!!,
+                            uriList = uriList,
+                            onFinish = onClose
+                        )
+                    } else {
+                        ServerNotFoundInfo()
                     }
                 }
             },

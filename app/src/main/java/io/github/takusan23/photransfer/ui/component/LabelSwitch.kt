@@ -1,17 +1,12 @@
 package io.github.takusan23.photransfer.ui.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +22,7 @@ import androidx.compose.ui.unit.sp
  * @param isEnable 有効ならtrue
  * @param onValueChange 有効、無効切り替わったら呼ばれる
  * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabelSwitch(
     text: String,
@@ -37,8 +33,6 @@ fun LabelSwitch(
     Surface(
         color = backgroundColor.value,
         onClick = { onValueChange(!isEnable) },
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(),
         shape = RoundedCornerShape(30.dp),
     ) {
         Row(
@@ -52,10 +46,10 @@ fun LabelSwitch(
                 text = text,
                 fontSize = 18.sp
             )
-            AndroidSnowConeSwitch(
+            Switch(
                 modifier = Modifier.padding(end = 10.dp),
-                isEnable = isEnable,
-                onValueChange = onValueChange
+                checked = isEnable,
+                onCheckedChange = onValueChange
             )
         }
     }

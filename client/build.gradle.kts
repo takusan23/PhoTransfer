@@ -10,7 +10,7 @@ java {
 
 dependencies {
     // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     // HttpClient
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
 }

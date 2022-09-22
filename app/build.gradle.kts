@@ -1,6 +1,4 @@
-val kotlinVersion: String by rootProject.extra
-val composeVersion: String by rootProject.extra
-
+val composeVersion = "1.2.0"
 
 plugins {
     id("com.android.application")
@@ -8,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 32
 
     defaultConfig {
         applicationId = "io.github.takusan23.photransfer"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 32
         versionCode = 3
         versionName = "1.2.0"
 
@@ -35,14 +33,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = composeVersion
-        kotlinCompilerVersion = kotlinVersion
     }
     packagingOptions {
         resources {
@@ -72,7 +68,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.navigation:navigation-compose:2.4.0-beta02")
     // Compose + Material You
-    implementation("androidx.compose.material3:material3:1.0.0-alpha01")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha14")
     // Composeで画像読み込む
     implementation("io.coil-kt:coil-compose:1.4.0")
 
@@ -86,7 +82,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
     // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     // MaterialDesign
     implementation("com.google.android.material:material:1.4.0")

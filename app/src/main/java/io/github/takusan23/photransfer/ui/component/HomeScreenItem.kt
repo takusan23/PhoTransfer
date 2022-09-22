@@ -1,13 +1,10 @@
 package io.github.takusan23.photransfer.ui.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +27,7 @@ import androidx.compose.ui.unit.sp
  * @param onClick 押したとき
  * @param shape 丸くしたいなら
  * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenItem(
     modifier: Modifier = Modifier,
@@ -44,8 +42,6 @@ fun HomeScreenItem(
     Surface(
         modifier = modifier,
         onClick = onClick,
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(),
         color = containerColor,
         shape = shape,
         contentColor = contentColor,
@@ -72,6 +68,7 @@ fun HomeScreenItem(
  * @param onValueChange スイッチの状態切り替わったら呼ばれる
  * @param shape 丸くしたいなら
  * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenSwitchItem(
     modifier: Modifier = Modifier,
@@ -87,8 +84,6 @@ fun HomeScreenSwitchItem(
     Surface(
         modifier = modifier,
         onClick = { onValueChange(!isEnable) },
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(),
         color = containerColor,
         shape = shape,
         contentColor = contentColor,
@@ -103,10 +98,10 @@ fun HomeScreenSwitchItem(
                 text = text,
                 description = description
             )
-            AndroidSnowConeSwitch(
+            Switch(
                 modifier = Modifier.padding(10.dp),
-                isEnable = isEnable,
-                onValueChange = onValueChange
+                checked = isEnable,
+                onCheckedChange = onValueChange
             )
         }
     }
@@ -126,6 +121,7 @@ fun HomeScreenSwitchItem(
  * @param onClick 押したとき
  * @param shape 丸くしたいなら
  * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenProgressItem(
     modifier: Modifier = Modifier,
@@ -142,8 +138,6 @@ fun HomeScreenProgressItem(
     Surface(
         modifier = modifier,
         onClick = onClick,
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(),
         color = containerColor,
         shape = shape,
         contentColor = contentColor,

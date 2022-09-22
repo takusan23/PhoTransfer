@@ -2,11 +2,14 @@ package io.github.takusan23.photransfer.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,11 +32,13 @@ fun LicenseScreen(
         topBar = {
             SmallTopAppBar(
                 navigationIcon = { IconButton(onClick = onBack) { Icon(painter = painterResource(id = R.drawable.ic_outline_arrow_back_24), contentDescription = null) } },
-                title = { Text(text = stringResource(id = R.string.license)) }
+                title = { Text(text = stringResource(id = R.string.license)) },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) {
         LazyColumn(
+            modifier = Modifier.padding(it),
             contentPadding = PaddingValues(vertical = 10.dp),
             content = {
                 items(licenseList) { data ->
