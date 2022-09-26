@@ -49,36 +49,6 @@ fun ServerSettingScreen(
                 navigationIcon = { IconButton(onClick = onBack, content = { Icon(painter = painterResource(id = R.drawable.ic_outline_arrow_back_24), contentDescription = null) }) }
             )
         },
-        content = {
-            Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
-                Column {
-                    // ポート番号
-                    Text(
-                        text = stringResource(id = R.string.setting_port_number_description),
-                        modifier = Modifier
-                            .padding(top = 5.dp)
-                            .fillMaxWidth()
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .padding(top = 5.dp)
-                            .fillMaxWidth(),
-                        value = portNumber.value,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        label = { Text(text = stringResource(id = R.string.setting_port_number_title)) },
-                        onValueChange = { value -> portNumber.value = value }
-                    )
-
-                    // Android 9以前は権限もらう
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                        StorageWritePermissionCard(modifier = Modifier.padding(top = 10.dp)) {
-                            isPermissionGranted.value = true
-                        }
-                    }
-
-                }
-            }
-        },
         floatingActionButton = {
             val isShow = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 isPermissionGranted.value
@@ -99,6 +69,33 @@ fun ServerSettingScreen(
                         }
                     }
                 )
+            }
+        },
+        content = {
+            Column(modifier = Modifier.padding(it)) {
+                // ポート番号
+                Text(
+                    text = stringResource(id = R.string.setting_port_number_description),
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .fillMaxWidth()
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .fillMaxWidth(),
+                    value = portNumber.value,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = { Text(text = stringResource(id = R.string.setting_port_number_title)) },
+                    onValueChange = { value -> portNumber.value = value }
+                )
+
+                // Android 9以前は権限もらう
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                    StorageWritePermissionCard(modifier = Modifier.padding(top = 10.dp)) {
+                        isPermissionGranted.value = true
+                    }
+                }
             }
         }
     )

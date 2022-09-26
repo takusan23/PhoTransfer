@@ -44,7 +44,7 @@ fun ClientSettingScreen(
             )
         },
         content = {
-            Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
+            Column(modifier = Modifier.padding(it)) {
                 // サーバー（受け取り側）情報
                 if (findDevice.value != null) {
                     DeviceFindResult(findDevice.value!!)

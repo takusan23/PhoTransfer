@@ -102,7 +102,7 @@ class PhoTransferService : Service() {
         scope.launch {
 
             // 充電中のみ？
-            val isRequireCharging = dataStore.data.first()[SettingKeyObject.SETTING_TRANSFER_REQUIRE_CHARGING] ?: true
+            val isRequireCharging = dataStore.data.first()[SettingKeyObject.SETTING_TRANSFER_REQUIRE_CHARGING] ?: false
             // 充電Flow
             val chargingFlow = if (isRequireCharging) ChargingCheckTool.listenCharging(this@PhoTransferService) else emptyFlow()
             // Wi-Fi検知Flow
