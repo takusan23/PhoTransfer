@@ -152,9 +152,9 @@ class PhoTransferService : Service() {
             // PhoTransferサーバー起動
             launch {
                 val server = PhoTransferServer()
-                server.startServer(portNumber, receivePhotoFolder.path).collect { (deviceName, filePath) ->
+                server.startServer(portNumber, receivePhotoFolder.path).collect { (deviceName, originalFileName, filePath, mimeType) ->
                     // 保存に成功すると呼ばれるので、MediaStoreへ保存する
-                    MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, File(filePath), true)
+                    MediaStoreTool.insertPhoto(this@PhoTransferService, deviceName, originalFileName, mimeType, File(filePath), true)
                 }
             }
         }

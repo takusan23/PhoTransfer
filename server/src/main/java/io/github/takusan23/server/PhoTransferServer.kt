@@ -65,15 +65,19 @@ class PhoTransferServer {
                         val multipartData = call.receiveMultipart()
                         multipartData.forEachPart { part ->
                             if (part is PartData.FileItem) {
-                                val name = part.originalFileName!!
                                 val byteArray = part.provider().readBytes()
                                 // ファイル作成
-                                val receiveFile = File(saveFolderPath, name).apply {
+                                val receiveFile = File(saveFolderPath, System.currentTimeMillis().toString()).apply {
                                     createNewFile()
                                     writeBytes(byteArray)
                                 }
                                 // ファイルパスをFlowに流す
-                                trySend(deviceName to receiveFile.path)
+                                trySend(PhoTransferData(
+                                    deviceName = deviceName,
+                                    originalName = part.originalFileName ?: System.currentTimeMillis().toString(),
+                                    filePath = receiveFile.path,
+                                    mimeType = part.contentType?.let { "${it.contentType}/${it.contentSubtype}" } ?: "image/png"
+                                ))
                             }
                         }
                         call.respondText("OK")

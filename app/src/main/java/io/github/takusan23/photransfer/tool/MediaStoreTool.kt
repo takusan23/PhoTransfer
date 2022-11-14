@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.webkit.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -31,12 +30,13 @@ object MediaStoreTool {
      * @param context Context
      * @param deviceName Pictures/PhoTransfer_<フォルダ名> ←ここの名前
      * @param file 書き込むファイル
+     * @param mimeType MIME Type
      * @param isFileDelete 追加後削除するか
      * */
-    suspend fun insertPhoto(context: Context, deviceName: String, file: File, isFileDelete: Boolean = false) = withContext(Dispatchers.IO) {
+    suspend fun insertPhoto(context: Context, deviceName: String, originalFileName: String, mimeType: String, file: File, isFileDelete: Boolean = false) = withContext(Dispatchers.IO) {
         val contentValues = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
-            put(MediaStore.Images.Media.MIME_TYPE, MimeTypeMap.getFileExtensionFromUrl(file.path))
+            put(MediaStore.Images.Media.MIME_TYPE, mimeType)
             // 写真フォルダに 「PhoTransfer_<デバイス名>」 フォルダを作成する
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/PhoTransfer_$deviceName")
@@ -65,7 +65,7 @@ object MediaStoreTool {
         } else {
             // Android 9
             val phoTransferFolder = File(Environment.DIRECTORY_PICTURES, "PhoTransfer_$deviceName").apply { mkdir() }
-            val photoFile = File(phoTransferFolder, file.name).apply { createNewFile() }
+            val photoFile = File(phoTransferFolder, originalFileName).apply { createNewFile() }
             // 書き込む
             val inputStream = file.inputStream()
             val outputStream = photoFile.outputStream()
