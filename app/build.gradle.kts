@@ -6,12 +6,13 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    namespace = "io.github.takusan23.photransfer"
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "io.github.takusan23.photransfer"
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 3
         versionName = "1.2.0"
 
