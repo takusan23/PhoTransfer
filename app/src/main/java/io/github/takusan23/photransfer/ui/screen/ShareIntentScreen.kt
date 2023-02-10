@@ -4,9 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,10 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.takusan23.photransfer.R
 import io.github.takusan23.photransfer.network.NetworkServiceDiscovery
-import io.github.takusan23.photransfer.ui.component.CarouselImage
-import io.github.takusan23.photransfer.ui.component.ClientServerInfo
-import io.github.takusan23.photransfer.ui.component.ServerNotFoundInfo
-import io.github.takusan23.photransfer.ui.component.ShareIntentTransferButton
+import io.github.takusan23.photransfer.tool.MediaStoreTool
+import io.github.takusan23.photransfer.ui.component.*
 import io.github.takusan23.photransfer.ui.theme.PhoTransferTheme
 
 /**
@@ -38,6 +34,15 @@ fun ShareIntentScreen(
     // 接続先情報
     val networkServiceDiscovery = remember { NetworkServiceDiscovery(context).findServerOrGetLatestServer() }
     val serverInfoData = networkServiceDiscovery.collectAsState(initial = null)
+    val carouselImageDataList = remember { mutableStateOf<List<CarouselImageData>>(emptyList()) }
+
+    LaunchedEffect(key1 = Unit) {
+        carouselImageDataList.value = uriList.map { uri ->
+            val mimeType = MediaStoreTool.getMimeType(context, uri)
+            val isPhoto = mimeType?.startsWith("image/") == true
+            CarouselImageData(uri, if (isPhoto) CarouselImageType.Photo else CarouselImageType.Video)
+        }
+    }
 
     PhoTransferTheme(isDynamicColor = true) {
 
@@ -60,7 +65,7 @@ fun ShareIntentScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // 画像をカルーセルみたいに表示
-                    CarouselImage(uriList = uriList)
+                    CarouselImage(carouselImageDataList = carouselImageDataList.value)
                     // PhoTransferサーバーを検出できれば転送押せるように
                     if (serverInfoData.value != null) {
                         // サーバー/転送先 情報

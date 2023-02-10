@@ -6,7 +6,6 @@ import com.github.druk.dnssd.DNSSDEmbedded
 import com.github.druk.dnssd.DNSSDRegistration
 import com.github.druk.dnssd.DNSSDService
 import com.github.druk.dnssd.RegisterListener
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
 
@@ -31,7 +30,6 @@ class AlternativeNSD(private val context: Context) {
      * @param port ポート番号
      * @return Flowを返します。流れてくる文字列は、検出時に表示される名前になります
      * */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun registerAltNSD(port: Int) = channelFlow {
         val service = dnssd.register(SERVICE_NAME, SERVICE_TYPE, port, object : RegisterListener {
             override fun operationFailed(service: DNSSDService?, errorCode: Int) {

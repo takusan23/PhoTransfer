@@ -2,6 +2,7 @@ package io.github.takusan23.client
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -27,12 +28,18 @@ object PhoTransferClient {
      * @param ipAddress サーバーのIPアドレス
      * @param deviceName クライアントのデバイス名
      * @param port ポート番号
+     * @param mimeType MIME-TYPE
      * @return 成功したらtrue
      * */
-    suspend fun sendData(ipAddress: String = "localhost", deviceName: String, port: Int = 4649, file: File) = withContext(Dispatchers.Default) {
-        // 送るデータ
+    suspend fun sendData(
+        ipAddress: String = "localhost",
+        deviceName: String,
+        port: Int = 4649,
+        file: File,
+        mimeType: String?
+    ) = withContext(Dispatchers.Default) {
         val formData = MultipartBody.Builder().apply {
-            addFormDataPart("photo", file.name, file.asRequestBody())
+            addFormDataPart("photo", file.name, file.asRequestBody(contentType = mimeType?.toMediaTypeOrNull()))
         }.build()
         val request = Request.Builder().apply {
             url("http://${ipAddress}:${port}/upload")

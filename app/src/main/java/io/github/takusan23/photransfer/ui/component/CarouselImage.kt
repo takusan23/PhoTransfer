@@ -15,9 +15,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import io.github.takusan23.photransfer.R
 
 /**
  * 横並びの画像。
@@ -29,28 +31,47 @@ fun CarouselImage(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     spaceDp: Dp = 10.dp,
-    uriList: List<Uri>,
+    carouselImageDataList: List<CarouselImageData>,
 ) {
     LazyRow(
         modifier = modifier,
         state = lazyListState,
         contentPadding = PaddingValues(horizontal = spaceDp, vertical = spaceDp),
         content = {
-            items(uriList) { uri ->
+            items(carouselImageDataList) { data ->
                 Surface(
                     modifier = Modifier.padding(end = 10.dp),
                     shape = RoundedCornerShape(10.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                     content = {
-                        Image(
-                            modifier = Modifier
-                                .size(200.dp),
-                            painter = rememberImagePainter(data = uri),
-                            contentDescription = null
-                        )
+                        if (data.type == CarouselImageType.Photo) {
+                            Image(
+                                modifier = Modifier
+                                    .size(200.dp),
+                                painter = rememberImagePainter(data = data.uri),
+                                contentDescription = null
+                            )
+                        } else {
+                            Image(
+                                modifier = Modifier
+                                    .size(200.dp),
+                                painter = painterResource(id = R.drawable.outline_video_file_24),
+                                contentDescription = null
+                            )
+                        }
                     }
                 )
             }
         }
     )
+}
+
+data class CarouselImageData(
+    val uri: Uri,
+    val type: CarouselImageType
+)
+
+enum class CarouselImageType {
+    Photo,
+    Video
 }

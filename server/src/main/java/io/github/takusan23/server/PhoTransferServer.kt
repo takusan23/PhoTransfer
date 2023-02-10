@@ -38,7 +38,8 @@ class PhoTransferServer {
         val server = embeddedServer(Netty, port = port) {
             routing {
                 get("/") {
-                    call.respondText("""
+                    call.respondText(
+                        """
                         開発者かな？ようこそ。
                         
                         写真アップロードAPIのURLは /upload になります。
@@ -50,7 +51,8 @@ class PhoTransferServer {
                         PCのユーザーはブラウザから投稿できるページを用意してあります。
                         /browser
                         へアクセスし、投稿したい画像をクリップボードから貼り付けて転送を押せばいいです。
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
 
                 // resources内のindex.htmlを取得。ブラウザ用投稿画面です
@@ -67,14 +69,15 @@ class PhoTransferServer {
                             if (part is PartData.FileItem) {
                                 val byteArray = part.provider().readBytes()
                                 // ファイル作成
-                                val receiveFile = File(saveFolderPath, System.currentTimeMillis().toString()).apply {
+                                val fileName = part.originalFileName ?: System.currentTimeMillis().toString()
+                                val receiveFile = File(saveFolderPath, fileName).apply {
                                     createNewFile()
                                     writeBytes(byteArray)
                                 }
                                 // ファイルパスをFlowに流す
                                 trySend(PhoTransferData(
                                     deviceName = deviceName,
-                                    originalName = part.originalFileName ?: System.currentTimeMillis().toString(),
+                                    originalName = fileName,
                                     filePath = receiveFile.path,
                                     mimeType = part.contentType?.let { "${it.contentType}/${it.contentSubtype}" } ?: "image/png"
                                 ))

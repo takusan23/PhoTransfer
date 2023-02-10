@@ -46,7 +46,6 @@ class NetworkServiceDiscovery(private val context: Context) {
      * @param port ポート番号
      * @return Flowを返します。流れてくる文字列は、検出時に表示される名前になります
      * */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun registerService(port: Int) = channelFlow {
         val serviceInfo = NsdServiceInfo().apply {
             serviceName = SERVICE_NAME
@@ -74,7 +73,7 @@ class NetworkServiceDiscovery(private val context: Context) {
         }
         nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
         // Flow終了時に登録解除する
-        // awaitClose { nsdManager.unregisterService(registrationListener) }
+        awaitClose { nsdManager.unregisterService(registrationListener) }
     }
 
     /**
@@ -82,7 +81,6 @@ class NetworkServiceDiscovery(private val context: Context) {
      *
      * @return Flowを返します。ネットワークサービス詳細が流れてきます。
      * */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun findServerOrGetLatestServer() = callbackFlow {
         var discoveryListener: NsdManager.DiscoveryListener? = null
         val setting = context.dataStore.data.first()
