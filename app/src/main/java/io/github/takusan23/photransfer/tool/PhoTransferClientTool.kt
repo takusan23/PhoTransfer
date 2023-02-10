@@ -24,7 +24,6 @@ object PhoTransferClientTool {
         val fileName = MediaStoreTool.getFileNameFromUri(context, uri)
         val tempPhoto = File(context.externalCacheDir, fileName).apply { createNewFile() }
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(tempPhoto.extension)
-        println(mimeType)
         // コピー
         context.contentResolver.openInputStream(uri)?.use { inputStream ->
             tempPhoto.outputStream().use { outputStream ->
