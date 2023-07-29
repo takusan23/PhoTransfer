@@ -1,14 +1,18 @@
 package io.github.takusan23.server
 
-import io.ktor.http.content.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.http.content.*
-import io.ktor.server.netty.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.utils.io.core.*
+import io.ktor.http.content.PartData
+import io.ktor.http.content.forEachPart
+import io.ktor.server.application.call
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.resource
+import io.ktor.server.netty.Netty
+import io.ktor.server.request.receiveMultipart
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.routing
+import io.ktor.utils.io.core.copyTo
+import io.ktor.utils.io.streams.asOutput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
@@ -67,12 +71,17 @@ class PhoTransferServer {
                         val multipartData = call.receiveMultipart()
                         multipartData.forEachPart { part ->
                             if (part is PartData.FileItem) {
-                                val byteArray = part.provider().readBytes()
                                 // ファイル作成
                                 val fileName = part.originalFileName ?: System.currentTimeMillis().toString()
+                                // コピーする
                                 val receiveFile = File(saveFolderPath, fileName).apply {
                                     createNewFile()
-                                    writeBytes(byteArray)
+                                }
+                                part.provider().use { input ->
+                                    // use でリソースを自動開放
+                                    receiveFile.outputStream().asOutput().use { output ->
+                                        input.copyTo(output)
+                                    }
                                 }
                                 // ファイルパスをFlowに流す
                                 trySend(PhoTransferData(
