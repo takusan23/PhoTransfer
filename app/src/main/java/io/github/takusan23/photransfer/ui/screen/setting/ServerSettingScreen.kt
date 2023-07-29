@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +34,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ServerSettingScreen(
     onBack: () -> Unit,
-    onNavigate: (String) -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

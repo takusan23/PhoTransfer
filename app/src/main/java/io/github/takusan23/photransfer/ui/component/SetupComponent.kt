@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -63,7 +62,6 @@ fun SetupTitle() {
  *
  * @param onNavigate 遷移してほしいときに呼ばれる
  * */
-@ExperimentalMaterialApi
 @Composable
 fun SetupServerOrClientSelect(onNavigate: (String) -> Unit) {
     Surface {

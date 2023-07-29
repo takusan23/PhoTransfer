@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,10 +29,9 @@ fun LicenseScreen(
 
     Scaffold(
         topBar = {
-            SmallTopAppBar(
+            TopAppBar(
                 navigationIcon = { IconButton(onClick = onBack) { Icon(painter = painterResource(id = R.drawable.ic_outline_arrow_back_24), contentDescription = null) } },
-                title = { Text(text = stringResource(id = R.string.license)) },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
+                title = { Text(text = stringResource(id = R.string.license)) }
             )
         }
     ) {
